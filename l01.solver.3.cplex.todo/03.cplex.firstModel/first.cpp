@@ -26,7 +26,7 @@ using namespace std;
 int status;
 char errmsg[BUF_SIZE];
 
-int main (int argc, char const *argv[])
+int main ()
 {
 	try
 	{
