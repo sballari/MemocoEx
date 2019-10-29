@@ -10,15 +10,16 @@ double Costs[Nh*Nh] = { //ridondante...
     0.5,0.0,0.3,
     0.3,0.5,0.0
 };
+int status;
+char errmsg[BUF_SIZE];
 
+void setupLP(CEnv& env, Prob& lp){
 
-setupLP(CEnv env, Prob lp,){
-
-    //variables: x_i_j::B
+    //variables: x_i_j::Binary
     std::vector<char> var_types(Nh*Nh);
     std::vector<double> var_lbs(Nh*Nh);
     std::vector<double> var_ubs(Nh*Nh);
-    std::vector<std::string> var_names(Nh*Nh); 
+    std::vector<char*> var_names(Nh*Nh); 
     std::vector<double> obj_fun_coefs(Nh*Nh);
 
     for(int i =0; i<Nh*Nh; i++){ //var x
@@ -28,7 +29,7 @@ setupLP(CEnv env, Prob lp,){
         char* var_name;
         snprintf(var_name,10,"x_%c_%c",i/Nh,i%Nh);
         var_names.push_back(var_name);
-        obj_fun_coefs. .push_back()
+        obj_fun_coefs.push_back(Costs[i]);
     }
     CHECKED_CPX_CALL( CPXnewcols, env, lp, 1, &obj_fun_coefs[0], &var_lbs[0], &var_ubs[0], &var_types[0], &var_names[0]);
 }   
