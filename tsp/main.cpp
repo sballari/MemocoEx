@@ -26,8 +26,7 @@ int idY(int i, int j){
 }
 
 void setupLP(CEnv env, Prob lp){
-
-    
+ 
     std::vector<char> var_types = std::vector<char>();
     std::vector<double> var_lbs = std::vector<double>();
     std::vector<double> var_ubs = std::vector<double>();
@@ -38,8 +37,8 @@ void setupLP(CEnv env, Prob lp){
         var_types.push_back('C');
         var_lbs.push_back(0.0);
         var_ubs.push_back(CPX_INFBOUND);
-        char* var_name = new char[10];
-        snprintf(var_name,10,"x_%c_%c",i/Nh,i%Nh);
+        char var_name[10];
+        snprintf(var_name,10,"x_%d_%d",i/Nh,i%Nh);
         var_names.push_back(var_name);
         obj_fun_coefs.push_back(0.0);
     }
@@ -48,12 +47,12 @@ void setupLP(CEnv env, Prob lp){
         var_types.push_back('B');
         var_lbs.push_back(0.0);
         var_ubs.push_back(1.0);
-        char* var_name = new char[10];
-        snprintf(var_name,10,"y_%c_%c",i/Nh,i%Nh);
+        char var_name[10];
+        snprintf(var_name,10,"y_%d_%d",i/Nh,i%Nh);
         var_names.push_back(var_name);
         obj_fun_coefs.push_back(Costs[i]);
     }
-    CHECKED_CPX_CALL( CPXnewcols, env, lp, 2*Nh*Nh, &obj_fun_coefs[0], &var_lbs[0], &var_ubs[0], &var_types[0], nullptr);
+    CHECKED_CPX_CALL( CPXnewcols, env, lp, 2*Nh*Nh, &obj_fun_coefs[0], &var_lbs[0], &var_ubs[0], &var_types[0], &var_names[0]);
     
     //CONSTRAINTS
     
@@ -83,15 +82,12 @@ void setupLP(CEnv env, Prob lp){
                     idx.push_back(idX(k,j));
                     coef.push_back(-1);
                     matbegin2use++;
-
                 }
-            }
-            
+            }         
     		senses.push_back('E');
             constValues.push_back(1.0);
         }
 	}
-
 
     for (int i=0; i<Nh; i++){
         matbegin.push_back(matbegin2use);
@@ -136,11 +132,7 @@ void setupLP(CEnv env, Prob lp){
         }
     }
     
-    //adding the A matrix
-    int constraints_N = constValues.size();
-    
-	CHECKED_CPX_CALL( CPXaddrows, env, lp, 0, constraints_N, idx.size(), &constValues[0], &senses[0], &matbegin[0], &idx[0], &coef[0], nullptr, nullptr );
-
+	CHECKED_CPX_CALL( CPXaddrows, env, lp, 0, constValues.size(), idx.size(), &constValues[0], &senses[0], &matbegin[0], &idx[0], &coef[0], nullptr, nullptr );
 }   
 
 int main(){
@@ -164,10 +156,8 @@ int main(){
 	  	std::vector<double> varVals;
 		varVals.resize(n);
   		CHECKED_CPX_CALL( CPXgetx, env, lp, &varVals[0], 0, n - 1 );
-		/// status =      CPXgetx (env, lp, x          , 0, CPXgetnumcols(env, lp)-1);
-  		
-          
-		CHECKED_CPX_CALL( CPXsolwrite, env, lp, "ironrods.sol" );
+        //write the solution
+		CHECKED_CPX_CALL( CPXsolwrite, env, lp, "tsp.sol" );
 		// free
 		CPXfreeprob(env, &lp);
 		CPXcloseCPLEX(&env);
