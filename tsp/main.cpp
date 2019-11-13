@@ -38,7 +38,7 @@ void setupLP(CEnv env, Prob lp){
         var_types.push_back('C');
         var_lbs.push_back(0.0);
         var_ubs.push_back(CPX_INFBOUND);
-        char var_name[10] = "x_row_col";
+        char* var_name = new char[10];
         snprintf(var_name,10,"x_%c_%c",i/Nh,i%Nh);
         var_names.push_back(var_name);
         obj_fun_coefs.push_back(0.0);
@@ -48,7 +48,7 @@ void setupLP(CEnv env, Prob lp){
         var_types.push_back('B');
         var_lbs.push_back(0.0);
         var_ubs.push_back(1.0);
-        char var_name[10] = "y_row_col";
+        char* var_name = new char[10];
         snprintf(var_name,10,"y_%c_%c",i/Nh,i%Nh);
         var_names.push_back(var_name);
         obj_fun_coefs.push_back(Costs[i]);
