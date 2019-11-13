@@ -62,15 +62,14 @@ void setupLP(CEnv env, Prob lp){
     std::vector<int> matbegin = std::vector<int>();
     std::vector<double> constValues = std::vector<double>();
     std::vector<char> senses = std::vector<char>();
-    /*
+    
 
     int matbegin2use = 0;
 
     for (int k = 0; k < Nh; k++) //zero nodo partente
 	{
-        matbegin.push_back(matbegin2use);
-        
         if (k!=startH) {
+            matbegin.push_back(matbegin2use);
             //somma archi entranti - somma archi uscenti da k
             for(int i=0; i<Nh; i++){ //archi entranti
                 if (k!=i) {
@@ -87,9 +86,10 @@ void setupLP(CEnv env, Prob lp){
 
                 }
             }
+            
+    		senses.push_back('E');
+            constValues.push_back(1.0);
         }
-		senses.push_back('E');
-        constValues.push_back(1.0);
 	}
 
 
@@ -138,8 +138,7 @@ void setupLP(CEnv env, Prob lp){
     
     //adding the A matrix
     int constraints_N = constValues.size();
-    */
-    int constraints_N = 0;
+    
 	CHECKED_CPX_CALL( CPXaddrows, env, lp, 0, constraints_N, idx.size(), &constValues[0], &senses[0], &matbegin[0], &idx[0], &coef[0], nullptr, nullptr );
 
 }   
