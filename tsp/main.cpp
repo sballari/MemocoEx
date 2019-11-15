@@ -1,7 +1,10 @@
 #include <cstdio>
 #include <iostream>
 #include <vector>
+#include <chrono>
 #include "../cpxmacro.h"
+
+using namespace std::chrono;
 
 //data initialization
 const int Nh = 4; //number of holes (nodes of the graph)
@@ -26,7 +29,6 @@ int idY(int i, int j){
 }
 
 void setupLP(CEnv env, Prob lp){
- 
     std::vector<char> var_types = std::vector<char>();
     std::vector<double> var_lbs = std::vector<double>();
     std::vector<double> var_ubs = std::vector<double>();
@@ -142,14 +144,22 @@ int main(){
 		DECL_ENV(env);
 		DECL_PROB( env, lp );
 		// setup LP
+        auto start_construction = high_resolution_clock::now(); 
 		setupLP(env, lp);
+        auto stop_construction = high_resolution_clock::now(); 
+        auto duration_construction = duration_cast<microseconds>(stop_construction - start_construction); 
         //write the problem in a file
         CHECKED_CPX_CALL( CPXwriteprob, env, lp, "lp_file/tsp.lp", NULL );
 		// optimize
+        auto start_optimize = high_resolution_clock::now(); 
 		CHECKED_CPX_CALL( CPXmipopt, env, lp );
+        auto stop_optimize = high_resolution_clock::now(); 
+        auto duration_optimize = duration_cast<microseconds>(stop_optimize - start_optimize); 
 		// print
 		double objval;
 		CHECKED_CPX_CALL( CPXgetobjval, env, lp, &objval );
+        std::cout<<  "problem setting time : "<<duration_construction.count()<<"ms"<<std::endl;
+        std::cout<<  "problem optimizing time : "<<duration_optimize.count()<<"ms"<<std::endl;
 		std::cout << "Objval: " << objval << std::endl;
 		int n = CPXgetnumcols(env, lp);
 		
