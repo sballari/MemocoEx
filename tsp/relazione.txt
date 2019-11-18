@@ -1,0 +1,5 @@
+Generazione di istanze:
+Il problema consisteste nel trovare una serie di movimenti per il trapano al fine di minimizzare il tempo per creare tutti i buchi. Questo e' proporzionale alla distanza percorsa dal trapano. Quindi il fine ultimo risulta quello di minimizzare la distanza compiuta dal trapano mobile.
+L'oggetto da forare coniste in una copertura per pannelli elettrici, ovviamenti i buchi sono generalmente disposti in maniera regolare e seguendo quindi una conformazione a griglia. 
+Il problema risulta quindi definito dalla disposizione dei buchi nel panello di plastica, mentre l'input del problema deve quindi generare le distanze tra i buchi.
+Scopo della classe generatrice e' quindi quello di creare istanze credibili al particolare caso. 
