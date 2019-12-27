@@ -3,3 +3,206 @@ Il problema consisteste nel trovare una serie di movimenti per il trapano al fin
 L'oggetto da forare coniste in una copertura per pannelli elettrici, ovviamenti i buchi sono generalmente disposti in maniera regolare e seguendo quindi una conformazione a griglia. 
 Il problema risulta quindi definito dalla disposizione dei buchi nel panello di plastica, mentre l'input del problema deve quindi generare le distanze tra i buchi.
 Scopo della classe generatrice e' quindi quello di creare istanze credibili al particolare caso. 
+
+GRID PANEL -------------------------------------------------------------------------------------
+------------------------------------------------------------------------------------------------
+creazione a griglia.
+FILE : 500X500-5-10-20-30
+PROBLEM: 0
+holes number : 6
+problem setting time : 251 micro_sec
+problem optimizing time : 18240 micro_sec
+Objval: 180
+-------------------------------------------
+PROBLEM: 1
+holes number : 11
+problem setting time : 100 micro_sec
+problem optimizing time : 85579 micro_sec
+Objval: 360
+-------------------------------------------
+PROBLEM: 2
+holes number : 21
+problem setting time : 196 micro_sec
+problem optimizing time : 584999 micro_sec
+Objval: 720
+-------------------------------------------
+PROBLEM: 3
+holes number : 31
+problem setting time : 476 micro_sec
+problem optimizing time : 708494 micro_sec
+Objval: 823.87
+
+
+provando a mantenere lo stesso numero di punti, ma griglia piu' ampia => punti piu' sparsi
+notiamo solo un piccolo overhead, ma notiamo delle curve comparabili (probabilmente dovuto al fatto che i punti potrebbero essere piu' sparsi???)
+
+figura: f2.png
+PROBLEM: 0
+holes number : 6
+problem setting time : 245 micro_sec
+problem optimizing time : 16242 micro_sec
+Objval: 180
+-------------------------------------------
+PROBLEM: 1
+holes number : 11
+problem setting time : 133 micro_sec
+problem optimizing time : 86920 micro_sec
+Objval: 360
+-------------------------------------------
+PROBLEM: 2
+holes number : 21
+problem setting time : 195 micro_sec
+problem optimizing time : 524711 micro_sec
+Objval: 720
+-------------------------------------------
+PROBLEM: 3
+holes number : 31
+problem setting time : 456 micro_sec
+problem optimizing time : 886986 micro_sec
+Objval: 1080
+
+
+FDSSAJFKLDASJFA
+AUMENTATO NUMERO DI NODI
+PROBLEM: 0
+holes number : 6
+problem setting time : 154 micro_sec
+problem optimizing time : 140204 micro_sec
+Objval: 180
+-------------------------------------------
+PROBLEM: 1
+holes number : 11
+problem setting time : 94 micro_sec
+problem optimizing time : 91480 micro_sec
+Objval: 360
+-------------------------------------------
+PROBLEM: 2
+holes number : 21
+problem setting time : 212 micro_sec
+problem optimizing time : 542265 micro_sec
+Objval: 720
+-------------------------------------------
+PROBLEM: 3
+holes number : 31
+problem setting time : 477 micro_sec
+problem optimizing time : 932545 micro_sec
+Objval: 1080
+-------------------------------------------
+PROBLEM: 4
+holes number : 41
+problem setting time : 704 micro_sec
+problem optimizing time : 23833319 micro_sec
+Objval: 1440
+-------------------------------------------
+PROBLEM: 5
+holes number : 51
+problem setting time : 1907 micro_sec
+problem optimizing time : 35635800 micro_sec
+Objval: 1800
+----------------------------------------------------------------------
+
+
+
+WEIRD PANEL FIRST TEST
+
+no graph, very strange fast computation ???? is it possible.
+Problaly an error
+PROBLEM weirdPanel: 0
+holes number : 5
+problem setting time : 169 micro_sec
+problem optimizing time : 68257 micro_sec
+Objval: 2015.4
+-------------------------------------------
+PROBLEM weirdPanel: 1
+holes number : 10
+problem setting time : 80 micro_sec
+problem optimizing time : 42026 micro_sec
+Objval: 2798.56
+-------------------------------------------
+PROBLEM weirdPanel: 2
+holes number : 20
+problem setting time : 170 micro_sec
+problem optimizing time : 184010 micro_sec
+Objval: 4161.09
+-------------------------------------------
+PROBLEM weirdPanel: 3
+holes number : 30
+problem setting time : 444 micro_sec
+problem optimizing time : 480888 micro_sec
+Objval: 4002.46
+-------------------------------------------
+PROBLEM weirdPanel: 4
+holes number : 40
+problem setting time : 667 micro_sec
+problem optimizing time : 1790103 micro_sec
+Objval: 4825.58
+-------------------------------------------
+PROBLEM weirdPanel: 5
+holes number : 50
+problem setting time : 1057 micro_sec
+problem optimizing time : 2737450 micro_sec
+Objval: 5201.65
+-------------------------------------------
+PROBLEM weirdPanel: 6
+holes number : 60
+problem setting time : 1786 micro_sec
+problem optimizing time : 9742858 micro_sec
+Objval: 6009.91
+-------------------------------------------
+PROBLEM weirdPanel: 7
+holes number : 70
+problem setting time : 3286 micro_sec
+problem optimizing time : 13726229 micro_sec
+Objval: 6714.91
+-----------------------------------------------------------------------------------------------
+PROBLEM weirdPanel: 0
+holes number : 5
+problem setting time : 110 micro_sec
+problem optimizing time : 37316 micro_sec
+Objval: 2015.4
+-------------------------------------------
+PROBLEM weirdPanel: 1
+holes number : 10
+problem setting time : 83 micro_sec
+problem optimizing time : 54343 micro_sec
+Objval: 2798.56
+-------------------------------------------
+PROBLEM weirdPanel: 2
+holes number : 20
+problem setting time : 177 micro_sec
+problem optimizing time : 185655 micro_sec
+Objval: 4161.09
+-------------------------------------------
+PROBLEM weirdPanel: 3
+holes number : 30
+problem setting time : 426 micro_sec
+problem optimizing time : 485333 micro_sec
+Objval: 4002.46
+-------------------------------------------
+PROBLEM weirdPanel: 4
+holes number : 40
+problem setting time : 705 micro_sec
+problem optimizing time : 1956345 micro_sec
+Objval: 4825.58
+-------------------------------------------
+PROBLEM weirdPanel: 5
+holes number : 50
+problem setting time : 1677 micro_sec
+problem optimizing time : 3025198 micro_sec
+Objval: 5201.65
+-------------------------------------------
+PROBLEM weirdPanel: 6
+holes number : 60
+problem setting time : 1893 micro_sec
+problem optimizing time : 10063599 micro_sec
+Objval: 6009.91
+-------------------------------------------
+PROBLEM weirdPanel: 7
+holes number : 70
+problem setting time : 2945 micro_sec
+problem optimizing time : 13202892 micro_sec
+Objval: 6714.91----------------------------------------------------------------------------------------
+
+
+PARAGRAPH - 5 minutes best model
+
