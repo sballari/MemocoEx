@@ -43,10 +43,12 @@ BoardPanel BoardPanel::create_gridPanel1(double base, double height,int maxH){
     int holesN = base/(ButtonB+5);
     
     for (int i=0; i<maxH; i++){
-        int rx = rand()%holesN;
-        int ry = rand()%rowN;
-        holesX.push_back(rx);
-        holesY.push_back(ry);
+        int rx = rand()%holesN*ButtonH+(ButtonH/2);
+        int ry = rand()%rowN*ButtonB+(ButtonB/2);
+        if (1) {
+            holesX.push_back(rx);
+            holesY.push_back(ry);
+        } else i--;
     }
     BoardPanel gridBP = BoardPanel(holesX,holesY);
     return gridBP;
@@ -67,33 +69,22 @@ double BoardPanel::get_euc_dist(int holeA, int holeB){
 int BoardPanel::get_holesN(){
     return this->holesX.size();
 }
-int WeirdPanel::get_holesN(){
-    return this->holesX.size();
-}
-double WeirdPanel::get_euc_dist(int holeA, int holeB){
-    if (holeA>=holesX.size() || holeB>=holesX.size()) {
-        throw "Exception: illegal hole index";
-    } else {
-        double dist = euc_dist(holesX[holeA],holesY[holeA],holesX[holeB],holesY[holeB]);
-        // std::cout<<"[SIMONE LOG ----------------------] requested dist"<<dist<<std::endl;
-        return dist;
-    }
-}
 
-WeirdPanel::WeirdPanel(double base, double height,int maxH){
-    holesX = std::vector<double>();
-    holesY = std::vector<double>();
+
+BoardPanel BoardPanel::create_weirdPanel(double base, double height,int maxH){
+    auto hX = std::vector<double>();
+    auto hY = std::vector<double>();
     for (int i =0; i<maxH; i++){
         // (rx,ry) center of the button
         double rx = (rand()/(double)RAND_MAX)*base;
         double ry = (rand()/(double)RAND_MAX)*height;
         if (rx+(ButtonB/2)<base && ry+(ButtonH/2)<height){ //feasible button
-            holesX.push_back(rx);
-            holesY.push_back(ry);
-            std::cout<<"[SIMONE LOG ----------------------] stuffed with ("<<rx<<","<<ry<<")"<<std::endl;
+            hX.push_back(rx);
+            hY.push_back(ry);
         } else {i--;} //unfeasible button -> retry
         
     }
+    return BoardPanel(hX,hY);
 }
 
 BoardPanel::BoardPanel(){
@@ -131,42 +122,6 @@ void BoardPanel::plot(double b, double h){
     plotPanel(this->holesX,this->holesY,b,h);
 }
 
-void WeirdPanel::plot(double b, double h){
-    plotPanel(this->holesX,this->holesY,b,h);
-}
-
-void WeirdPanel::plotSol(double b, double h,std::vector<double> decVar){
-
-     std::vector<double> zz ;//= {0,0};
-    std::vector<double> zh ;//= {0,h};
-    std::vector<double> zb ;//= {0,b};
-    std::vector<double> hh ;//= {h,h};
-    std::vector<double> bb ;//= {b,b};
-    zz.push_back(0); zz.push_back(0);
-    zh.push_back(0); zh.push_back(h);
-    zb.push_back(0); zb.push_back(b);
-    hh.push_back(h); hh.push_back(h);
-    bb.push_back(b); bb.push_back(b);
-    
-    plt::title("panel");
-    plt::plot(zz,zh, "blue");
-    plt::plot(bb,zh, "blue");
-    plt::plot(zb,zz, "blue");
-    plt::plot(zb,hh, "blue");
-    plt::scatter(holesX,holesY);
-
-
-    double Nh = sqrt(decVar.size()/2);
-    for (int i=0; i<Nh; i++){
-        for (int j=i; j<Nh; j++){
-            if (decVar[Nh*Nh+i*Nh+j]==1){
-                plt::plot({holesX[i],holesX[j]},{holesY[i],holesY[j]},"black");
-            }
-        }
-    }
-    plt::show();
-}
-
 void BoardPanel::plotSol(double b, double h,std::vector<double> decVar){
 
     std::vector<double> zz ;//= {0,0};
@@ -187,11 +142,10 @@ void BoardPanel::plotSol(double b, double h,std::vector<double> decVar){
     plt::plot(zb,hh, "blue");
     plt::scatter(holesX,holesY);
     
-    double Nh = sqrt(decVar.size()/2);
-    std::cout<<Nh<<std::endl;
+    int Nh = get_holesN();
     for (int i=0; i<Nh; i++){
-        for (int j=i; j<Nh; j++){
-            if (decVar[Nh*Nh+i*Nh+j]==1){
+        for (int j=0; j<Nh; j++){
+            if (decVar[Nh*Nh-Nh+i*Nh+j]==1){
                 plt::plot({holesX[i],holesX[j]},{holesY[i],holesY[j]},"black");
             }
         }

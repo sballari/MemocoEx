@@ -6,203 +6,72 @@ Scopo della classe generatrice e' quindi quello di creare istanze credibili al p
 
 GRID PANEL -------------------------------------------------------------------------------------
 ------------------------------------------------------------------------------------------------
-creazione a griglia.
-FILE : 500X500-5-10-20-30
+(PUNTI PRATICAMENTE ALLINEATI SUL BASSO)
 PROBLEM: 0
-holes number : 6
-problem setting time : 251 micro_sec
-problem optimizing time : 18240 micro_sec
-Objval: 180
+holes number : 5
+problem setting time : 121 micro_sec
+problem optimizing time : 19830 micro_sec
+Objval: 144
+plotting solution panel
 -------------------------------------------
 PROBLEM: 1
-holes number : 11
-problem setting time : 100 micro_sec
-problem optimizing time : 85579 micro_sec
-Objval: 360
+holes number : 10
+problem setting time : 125 micro_sec
+problem optimizing time : 216833 micro_sec
+Objval: 324
+plotting solution panel
 -------------------------------------------
 PROBLEM: 2
-holes number : 21
-problem setting time : 196 micro_sec
-problem optimizing time : 584999 micro_sec
-Objval: 720
+holes number : 20
+problem setting time : 1034 micro_sec
+problem optimizing time : 849381 micro_sec
+Objval: 684
+plotting solution panel
 -------------------------------------------
 PROBLEM: 3
-holes number : 31
-problem setting time : 476 micro_sec
-problem optimizing time : 708494 micro_sec
-Objval: 823.87
-
+holes number : 30
+problem setting time : 2368 micro_sec
+problem optimizing time : 3256786 micro_sec
+Objval: 1044
 
 provando a mantenere lo stesso numero di punti, ma griglia piu' ampia => punti piu' sparsi
 notiamo solo un piccolo overhead, ma notiamo delle curve comparabili (probabilmente dovuto al fatto che i punti potrebbero essere piu' sparsi???)
 
-figura: f2.png
-PROBLEM: 0
-holes number : 6
-problem setting time : 245 micro_sec
-problem optimizing time : 16242 micro_sec
-Objval: 180
--------------------------------------------
-PROBLEM: 1
-holes number : 11
-problem setting time : 133 micro_sec
-problem optimizing time : 86920 micro_sec
-Objval: 360
--------------------------------------------
-PROBLEM: 2
-holes number : 21
-problem setting time : 195 micro_sec
-problem optimizing time : 524711 micro_sec
-Objval: 720
--------------------------------------------
-PROBLEM: 3
-holes number : 31
-problem setting time : 456 micro_sec
-problem optimizing time : 886986 micro_sec
-Objval: 1080
 
 
-FDSSAJFKLDASJFA
-AUMENTATO NUMERO DI NODI
-PROBLEM: 0
-holes number : 6
-problem setting time : 154 micro_sec
-problem optimizing time : 140204 micro_sec
-Objval: 180
--------------------------------------------
-PROBLEM: 1
-holes number : 11
-problem setting time : 94 micro_sec
-problem optimizing time : 91480 micro_sec
-Objval: 360
--------------------------------------------
-PROBLEM: 2
-holes number : 21
-problem setting time : 212 micro_sec
-problem optimizing time : 542265 micro_sec
-Objval: 720
--------------------------------------------
-PROBLEM: 3
-holes number : 31
-problem setting time : 477 micro_sec
-problem optimizing time : 932545 micro_sec
-Objval: 1080
--------------------------------------------
-PROBLEM: 4
-holes number : 41
-problem setting time : 704 micro_sec
-problem optimizing time : 23833319 micro_sec
-Objval: 1440
--------------------------------------------
-PROBLEM: 5
-holes number : 51
-problem setting time : 1907 micro_sec
-problem optimizing time : 35635800 micro_sec
-Objval: 1800
-----------------------------------------------------------------------
+PARAGRAFO - 5 MINUTES BEST solo
+
+PARTE 2
+E' stato scelto un metodo euristico per risolvere la seconda parte dell'esercizio. E' stata presa questa decisione in quanto i
+metodi esatti nonostante la varie ottimizzazioni come la generazione non esaustica dei vincoli SEC richiedono tempo esponenziale addirittura anche nella risoluzione di ogni sottoproblema risallato. Anche decidendo di stoppare l'algoritmo dopo un determinato quantitativo di tempo, non si avrebbe una soluzione feasible in quanto potrebbe avere piu' sub-tour. Nell'alg della parte 1 in caso di early stop cmq disponiamo di una soluzione feasible, ma non ottimale quindi in qualche modo accettabile. In conclusione ho ritenuto piu' interessante esplorare metodi meta-euristici, soprattutto in un'ottica di confronto con i metodi esatti quando questi terminano e l'incumbent solution di questi in caso di ecessivo sforzo computazionale.
+s
 
 
-
-WEIRD PANEL FIRST TEST
-
-no graph, very strange fast computation ???? is it possible.
-Problaly an error
-PROBLEM weirdPanel: 0
-holes number : 5
-problem setting time : 169 micro_sec
-problem optimizing time : 68257 micro_sec
-Objval: 2015.4
--------------------------------------------
-PROBLEM weirdPanel: 1
-holes number : 10
-problem setting time : 80 micro_sec
-problem optimizing time : 42026 micro_sec
-Objval: 2798.56
--------------------------------------------
-PROBLEM weirdPanel: 2
-holes number : 20
-problem setting time : 170 micro_sec
-problem optimizing time : 184010 micro_sec
-Objval: 4161.09
--------------------------------------------
-PROBLEM weirdPanel: 3
-holes number : 30
-problem setting time : 444 micro_sec
-problem optimizing time : 480888 micro_sec
-Objval: 4002.46
--------------------------------------------
-PROBLEM weirdPanel: 4
-holes number : 40
-problem setting time : 667 micro_sec
-problem optimizing time : 1790103 micro_sec
-Objval: 4825.58
--------------------------------------------
-PROBLEM weirdPanel: 5
-holes number : 50
-problem setting time : 1057 micro_sec
-problem optimizing time : 2737450 micro_sec
-Objval: 5201.65
--------------------------------------------
-PROBLEM weirdPanel: 6
-holes number : 60
-problem setting time : 1786 micro_sec
-problem optimizing time : 9742858 micro_sec
-Objval: 6009.91
--------------------------------------------
-PROBLEM weirdPanel: 7
-holes number : 70
-problem setting time : 3286 micro_sec
-problem optimizing time : 13726229 micro_sec
-Objval: 6714.91
------------------------------------------------------------------------------------------------
-PROBLEM weirdPanel: 0
-holes number : 5
-problem setting time : 110 micro_sec
-problem optimizing time : 37316 micro_sec
-Objval: 2015.4
--------------------------------------------
-PROBLEM weirdPanel: 1
-holes number : 10
-problem setting time : 83 micro_sec
-problem optimizing time : 54343 micro_sec
-Objval: 2798.56
--------------------------------------------
-PROBLEM weirdPanel: 2
-holes number : 20
-problem setting time : 177 micro_sec
-problem optimizing time : 185655 micro_sec
-Objval: 4161.09
--------------------------------------------
-PROBLEM weirdPanel: 3
-holes number : 30
-problem setting time : 426 micro_sec
-problem optimizing time : 485333 micro_sec
-Objval: 4002.46
--------------------------------------------
-PROBLEM weirdPanel: 4
-holes number : 40
-problem setting time : 705 micro_sec
-problem optimizing time : 1956345 micro_sec
-Objval: 4825.58
--------------------------------------------
-PROBLEM weirdPanel: 5
-holes number : 50
-problem setting time : 1677 micro_sec
-problem optimizing time : 3025198 micro_sec
-Objval: 5201.65
--------------------------------------------
-PROBLEM weirdPanel: 6
-holes number : 60
-problem setting time : 1893 micro_sec
-problem optimizing time : 10063599 micro_sec
-Objval: 6009.91
--------------------------------------------
-PROBLEM weirdPanel: 7
-holes number : 70
-problem setting time : 2945 micro_sec
-problem optimizing time : 13202892 micro_sec
-Objval: 6714.91----------------------------------------------------------------------------------------
-
-
-PARAGRAPH - 5 minutes best model
-
+EURISTICHE COSTRUTTIVE PER INIT SOL
+TSP: euristiche costruttiveCon il termine “euristiche costruttive” si identifica una ampia famiglia di euristiche che arrivano allasoluzione procedendo un vertice alla volta seguendo delle regole prefissate. Lo schema generale diqueste euristiche è composto da tre passi:
+1.Inizializzazione:scelta del ciclo parziale iniziale (o del punto di partenza);
+2.Selezione:scelta del prossimo vertice da inserire nella soluzione parziale;
+3.Inserimento:scelta della posizione dove inserire il nuovo vertice.Vediamo ora come queste regole vengono istanziate in cinque euristiche costruttive diverse.
+Nearest Neighbor ------------------
+1.Inizializzazione:si parte con il cammino composto dal solo vertice 0
+2.Selezione:sia(v0,...,vk)il cammino corrente. Trova il verticevk+1non ancora inseritonel circuito a distanza minima davk;
+3.Inserimento:inseriscivk+1subito dopovknel cammino;
+4.  ripeti da (2) finché non hai inserito tutti i vertici nel cammino;
+5.  chiudi il circuito inserendo il vertice iniziale 0 alla fine del cammino(0,...,vn).
+Random Insertion --------------------
+1.Inizializzazione:considera il circuito parziale composto dal solo vertice0.  Trova unverticejche minimizzaw(0,j)e costruisci il circuito parziale(0,j,0);
+2.Selezione:seleziona in modo casuale un verticeknon ancora inserito nel circuito;
+3.Inserimento:trova l’arco{i,j}del circuito parziale che minimizza il valorew(i,k) +w(k,j)−w(i,j)e inserisciktraiej;
+4.  ripeti da (2) finché non hai inserito tutti i vertici nel circuito.Le euristiche “Closest Insertion”, “Farthest Insertion” e “Cheapest Insertion” si differenzianoda Random Insertion nella selezione del vertice, che non è più arbitrario ma segue una regolaprecisa. Inizializzazione e Inserimento non variano.
+Cheapest Insertion ---------------------------
+1.Inizializzazione:considera il circuito parziale composto dal solo vertice0.  Trova unverticejche minimizzaw(0,j)e costruisci il circuito parziale(0,j,0);
+2.Selezione:trova un verticeknon presente nel circuito parziale e un arco{i,j}del circuitoparziale che minimizzano il valorew(i,k)+w(k,j)−w(i,j);
+3.Inserimento:inserisciktraiej;
+4.  ripeti da (2) finché non hai inserito tutti i vertici nel circuito.Dato un insieme di verticiC⊆Vche rappresentano un circuito parziale, ed un verticek6∈C,definiamo ladistanzadikdaCcome il minimo peso di un arco che collegakaC:δ(k,C) =minh∈Cw(h,k)Le euristiche “Closest Insertion” e “Farthest Insertion” selezionano i vertici che minimizzano omassimizzano la distanza dal circuito parziale.Closest Insertion1.Inizializzazione:considera il circuito parziale composto dal solo vertice0.  Trova unverticejche minimizzaw(0,j)e costruisci il circuito parziale(0,j,0);
+2.Selezione:trova un verticeknon presente nel circuito parzialeCcheminimizzaδ(k,C);
+3.Inserimento:trova l’arco{i,j}del circuito parziale che minimizza il valorew(i,k) +w(k,j)−w(i,j)e inserisciktraiej;
+4.  ripeti da (2) finché non hai inserito tutti i vertici nel circuito.Farthest Insertion1.Inizializzazione:considera il circuito parziale composto dal solo vertice0.  Trova unverticejche minimizzaw(0,j)e costruisci il circuito parziale(0,j,0);
+2.Selezione:trova un verticeknon presente nel circuito parzialeCchemassimizzaδ(k,C);
+3.Inserimento:trova l’arco{i,j}del circuito parziale che minimizza il valorew(i,k) +
+7.8  Approssimare TSP costruendo un albero di copertura minimo77w(k,j)−w(i,j)e inserisciktraiej;
+4.  ripeti da (2) finché non hai inserito tutti i vertici nel circuito.Fattori di approssimazione delle euristiche costruttive.È possibile dimostrare che le cinque euristiche costruttive permettono di trovare una soluzionelog(n)-approssimata a TSP, quando la disuguaglianza triangolare è rispettata. Nel caso di ClosestInsertion e Cheapest Insertion il fattore di approssimazione può essere ulteriormente abbassato,dimostrando che entrambe le euristiche permettono di ottenere un algoritmo2-approssimato perTSP (quando la disuguaglianza triangolare è rispettata).

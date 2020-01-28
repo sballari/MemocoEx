@@ -27,13 +27,16 @@ char errmsg[BUF_SIZE];
 
 
 int idX(int i, int j,int Nh){
-    return i*Nh+j;
+    /*if (i<=j)*/ return -(i+1)+ i*Nh+j;
+    // else return j*Nh+i;
 }
 int idY(int i, int j,int Nh){
-    return (Nh*Nh) + i*Nh+j   ;
+    int offset = Nh*Nh-Nh ;//(Nh*Nh+Nh)/2;
+    /*if (i<=j)*/ return offset + i*Nh+j;
+    // else return offset +j*Nh+i;  ;
 }
 
-void setupLP(CEnv env, Prob lp, Panel* panel){
+void setupLP(CEnv env, Prob lp, Pabnel* panel){
     int Nh = panel->get_holesN();
     int startH = 0;
 
@@ -43,26 +46,35 @@ void setupLP(CEnv env, Prob lp, Panel* panel){
     std::vector<char*> var_names = std::vector<char*>(); 
     std::vector<double> obj_fun_coefs = std::vector<double>();       
 
-    for(int i =0; i<Nh*Nh; i++){ //var x
-        var_types.push_back('C');
-        var_lbs.push_back(0.0);
-        var_ubs.push_back(CPX_INFBOUND);
-        char var_name[10];
-        snprintf(var_name,10,"x_%d_%d",i/Nh,i%Nh);
-        var_names.push_back(var_name);
-        obj_fun_coefs.push_back(0.0);
+    for(int i =0; i<Nh; i++){ //var x
+        for (int j = 1; j<Nh; j++){
+            // if (i!=j){
+                var_types.push_back('C');
+                var_lbs.push_back(0.0);
+                var_ubs.push_back(CPX_INFBOUND);
+                char* var_name = new char[10];
+                snprintf(var_name,10,"x_%d_%d",i,j);
+                var_names.push_back(var_name);
+                obj_fun_coefs.push_back(0.0);
+            // }
+        }
     }
     
-    for(int i =0; i<Nh*Nh; i++){ //var y
-        var_types.push_back('B');
-        var_lbs.push_back(0.0);
-        var_ubs.push_back(1.0);
-        char var_name[10];
-        snprintf(var_name,10,"y_%d_%d",i/Nh,i%Nh);
-        var_names.push_back(var_name);
-        obj_fun_coefs.push_back(panel->get_euc_dist(i/Nh,i%Nh));
+    for(int i =0; i<Nh; i++){ //var y
+        for (int j=0; j<Nh; j++){
+            // if (i!=j){
+                var_types.push_back('B');
+                var_lbs.push_back(0.0);
+                var_ubs.push_back(1.0);
+                char* var_name = new char[10];
+                snprintf(var_name,10,"y_%d_%d",i,j);
+                var_names.push_back(var_name);
+                obj_fun_coefs.push_back(panel->get_euc_dist(i,j));
+                // (i!=j)? obj_fun_coefs.push_back(panel->get_euc_dist(i,j)) : obj_fun_coefs.push_back(Nh);
+            // }
+        }      
     }
-    CHECKED_CPX_CALL( CPXnewcols, env, lp, 2*Nh*Nh, &obj_fun_coefs[0], &var_lbs[0], &var_ubs[0], &var_types[0], &var_names[0]);
+    CHECKED_CPX_CALL( CPXnewcols, env, lp, obj_fun_coefs.size(), &obj_fun_coefs[0], &var_lbs[0], &var_ubs[0], &var_types[0], &var_names[0]);
     
     //CONSTRAINTS
     
@@ -74,40 +86,45 @@ void setupLP(CEnv env, Prob lp, Panel* panel){
     
 
     int matbegin2use = 0;
-
-    for (int k = 0; k < Nh; k++) //zero nodo partente
+    for (int i =1; i<Nh; i++){
+        matbegin.push_back(matbegin2use);
+        idx.push_back(idY(i,i,Nh));
+        coef.push_back(1);
+        senses.push_back('E');
+        constValues.push_back(0.0);
+        matbegin2use++;
+    }
+    for (int k = 1; k < Nh; k++) //zero nodo partente
 	{
-        if (k!=startH) {
-            matbegin.push_back(matbegin2use);
-            //somma archi entranti - somma archi uscenti da k
-            for(int i=0; i<Nh; i++){ //archi entranti
-                if (k!=i) {
-                    idx.push_back(idX(i,k,Nh));
-                    coef.push_back(1);
-                    matbegin2use++;
-                }
-            }
-            for(int j=0; j<Nh; j++){ //archi uscenti
-                if (j!=0 || k!=j) {
-                    idx.push_back(idX(k,j,Nh));
-                    coef.push_back(-1);
-                    matbegin2use++;
-                }
-            }         
-    		senses.push_back('E');
-            constValues.push_back(1.0);
+        matbegin.push_back(matbegin2use);
+        //somma archi entranti - somma archi uscenti da k
+        for(int i=0; i<Nh; i++){ //archi entranti
+            // if (k!=i) {
+                idx.push_back(idX(i,k,Nh));
+                coef.push_back(1);
+                matbegin2use++;
+            // }
         }
+        for(int j=1; j<Nh; j++){ //archi uscenti
+            if (k!=j) {
+                idx.push_back(idX(k,j,Nh));
+                coef.push_back(-1);
+                matbegin2use++;
+            }
+        }         
+        senses.push_back('E');
+        constValues.push_back(1.0);
 	}
 
     for (int i=0; i<Nh; i++){
         matbegin.push_back(matbegin2use);
 
         for (int j=0; j<Nh; j++){ //somma nodi uscenti
-            if (j!=i) {
+            // if (i!=j) {
                 idx.push_back(idY(i,j,Nh));
                 coef.push_back(1);
                 matbegin2use++;
-            }
+            // }
         }
         senses.push_back('E');
         constValues.push_back(1);
@@ -117,19 +134,19 @@ void setupLP(CEnv env, Prob lp, Panel* panel){
         matbegin.push_back(matbegin2use);
 
         for (int i=0; i<Nh; i++){//somma nodi entranti
-            if (j!=i){
+            // if (i!=j){
                 idx.push_back(idY(i,j,Nh));
                 coef.push_back(1);
                 matbegin2use++;
-            }
+            // }
         }
         senses.push_back('E');
         constValues.push_back(1);
     }
 
     for (int i=0; i<Nh; i++){
-        for(int j=0; j<Nh; j++){
-            if (j!=0){
+        for(int j=1; j<Nh; j++){
+            // if (i!=j){
                 matbegin.push_back(matbegin2use);
                 idx.push_back(idX(i,j,Nh));
                 idx.push_back(idY(i,j,Nh));
@@ -138,7 +155,7 @@ void setupLP(CEnv env, Prob lp, Panel* panel){
                 senses.push_back('L');
                 constValues.push_back(0);
                 matbegin2use+=2;
-            }
+            // }
         }
     }
     
@@ -151,10 +168,10 @@ int main1(){
     try
 	{
         std::vector<BoardPanel> instances;
-        instances.push_back(BoardPanel::create_gridPanel(1000,1000,5));
-        instances.push_back(BoardPanel::create_gridPanel(1000,1000,10));
-        instances.push_back(BoardPanel::create_gridPanel(1000,1000,20));
-        instances.push_back(BoardPanel::create_gridPanel(1000,1000,30));
+        instances.push_back(BoardPanel::create_gridPanel1(1000,1000,5));
+        instances.push_back(BoardPanel::create_gridPanel1(1000,1000,10));
+        instances.push_back(BoardPanel::create_gridPanel1(1000,1000,20));
+        instances.push_back(BoardPanel::create_gridPanel1(1000,1000,30));
 
         auto timeSetting = std::vector<double>();
         auto timeSolving = std::vector<double>();
@@ -293,15 +310,15 @@ int exp2(){
 int main3(){
     try
 	{
-        std::vector<WeirdPanel> instances;
-        instances.push_back(WeirdPanel(1000,1000,5));
-        instances.push_back(WeirdPanel(1000,1000,10));
-        // instances.push_back(WeirdPanel(1000,1000,20));
-        // instances.push_back(WeirdPanel(1000,1000,30));
-        // instances.push_back(WeirdPanel(1000,1000,40));
-        // instances.push_back(WeirdPanel(1000,1000,50));
-        // instances.push_back(WeirdPanel(1000,1000,60));
-        // instances.push_back(WeirdPanel(1000,1000,70));
+        std::vector<BoardPanel> instances;
+        instances.push_back(BoardPanel::create_weirdPanel(1000,1000,5));
+        instances.push_back(BoardPanel::create_weirdPanel(1000,1000,10));
+        instances.push_back(BoardPanel::create_weirdPanel(1000,1000,20));
+        instances.push_back(BoardPanel::create_weirdPanel(1000,1000,30));
+        instances.push_back(BoardPanel::create_weirdPanel(1000,1000,40));
+        instances.push_back(BoardPanel::create_weirdPanel(1000,1000,50));
+        instances.push_back(BoardPanel::create_weirdPanel(1000,1000,60));
+        instances.push_back(BoardPanel::create_weirdPanel(1000,1000,70));
 
 
 

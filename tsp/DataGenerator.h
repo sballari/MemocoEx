@@ -30,20 +30,7 @@ class BoardPanel : public Panel   {
 
         static BoardPanel create_gridPanel(double base, double height,int maxH);
         static BoardPanel create_gridPanel1(double base, double height,int maxH);
+        static BoardPanel create_weirdPanel(double base, double height, int maxH);
 };
-
-class WeirdPanel : public Panel{
-    private:
-        std::vector<double> holesX;
-        std::vector<double> holesY;          
-    public:
-        ~WeirdPanel(){}
-        double  get_euc_dist(int a, int b) override;
-        int  get_holesN() override;
-        void plot(double b, double h) override;
-        void plotSol(double b, double h,std::vector<double> decVar) override;
-        
-        WeirdPanel(double base, double height,int maxH);
-} ;
 
 #endif /* Data_gen */
