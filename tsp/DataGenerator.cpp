@@ -4,6 +4,7 @@
 #include <vector> 
 #include "matplotlib-cpp/matplotlibcpp.h"
 #include <iostream>
+
 namespace plt = matplotlibcpp;
 
 const double Panel::ButtonB = 18; //standard hole dimension
