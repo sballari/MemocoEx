@@ -47,11 +47,9 @@ PathRappr RandomInsertion::get_sol(BoardPanel panel){
         double delta_min = std::numeric_limits<double>::max();
 
         //trovo l'intermezzo piu' conveniente dove inserire k
-        std::cout<<"inizio ciclo for per trovare minimaC"<<std::endl;
         for (auto j=circParz.begin()++; j!=circParz.end(); j++){
             auto i = j;
             i--;
-            std::cout<<"step interno *i="<<*i<<" *j="<<*j<<std::endl;
             double djk = panel.get_euc_dist(*j,k);
             double dik = panel.get_euc_dist(*i,k);
             double dij = panel.get_euc_dist(*i,*j);
@@ -69,10 +67,12 @@ PathRappr RandomInsertion::get_sol(BoardPanel panel){
 
 int main(){
     std::cout<<"generazione istanza"<<std::endl;
-    auto panel = BoardPanel::create_gridPanel1(100,200,30);
+    auto panel = BoardPanel::create_gridPanel1(45,35,30);
     std::cout<<"fine generazione istanza"<<std::endl;
+    
     std::cout<<"esecuzione Random Insertion"<<std::endl;
     auto sol = RandomInsertion::get_sol(panel);
+    sol.plot(panel);
     std::cout<<"fine"<<std::endl;
     
 }
