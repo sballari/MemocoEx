@@ -8,7 +8,7 @@
 #include "../DataGenerator.h"
 #include "../Solution.h"
 
-PathRappr RandomInsertion::get_sol(BoardPanel panel){
+PathRappr RandomInsertion::get_sol(Panel& panel){
     // descr : algoritmo che risolve il problema TSP sul grafo G usando l'euristica Random Insertion. La soluzione ottenuta e' 2-approssimata
     // panel : grafo pesato
     // ret : tupla contenente il circuito hamiltoniano approssima con Random insertion e il tempo di esecuzione dell'algoritmo

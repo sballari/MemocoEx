@@ -34,3 +34,14 @@ void PathRappr::addCity(int city){
     plt::plot(Xs,Ys,"blue");
     plt::show();
  };
+
+double PathRappr::evaluate_cost(Panel& panel){
+    //funzione di scoring piu' banale possibile
+    double cost = 0;
+    for( auto i = path.begin()++; i!= path.end(); i++ ){
+        auto j = i;
+        j--;
+        cost+=panel.get_euc_dist(*j,*i);
+    }
+    return cost;
+}

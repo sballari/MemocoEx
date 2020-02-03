@@ -14,6 +14,7 @@ class Panel {
         virtual int get_holesN()=0;
         virtual void plot(bool show)=0;
         virtual void plotSol(std::vector<double> decVar)=0;
+        
 };
 class BoardPanel : public Panel   {
     private: 

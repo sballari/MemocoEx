@@ -115,11 +115,7 @@ void BoardPanel::plot(bool show = true){
 }
 void BoardPanel::plotSol(std::vector<double> decVar){
 
-    plt::plot({0,0},{0,height}, "black");
-    plt::plot({0,base},{height,height}, "black");
-    plt::plot({base,base},{height,0}, "black");
-    plt::plot({0,base},{0,0}, "black");
-    plt::scatter(holesX,holesY);
+    plot(false);
     
     int Nh = get_holesN();
     for (int i=0; i<Nh; i++){

@@ -9,7 +9,7 @@
 
 class RandomInsertion {
     public:
-        static PathRappr get_sol(BoardPanel panel);
+        static PathRappr get_sol(Panel& panel);
 };
 
 #endif
