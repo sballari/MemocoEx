@@ -247,7 +247,7 @@ int exp2(){
         instances.push_back(BoardPanel::create_gridPanel(10000,10000,70));
 
         auto timeSetting = std::vector<double>();
-        auto timeSolving = std::vector<double>();
+        auto timeSolving = double>();
 
         for (long unsigned int in=0; in<instances.size(); in++ ){
             // init

@@ -1,5 +1,5 @@
-#ifndef GenAlg
-#define GenAlg
+#ifndef GenOp
+#define GenOp
 
 #include <cstdlib>
 #include <vector> 
@@ -8,41 +8,49 @@
 
 class PopulationGenerator {
     public:
-    virtual std::vector<Solution&> generateInitPopulation(int N, Panel& panel)=0;
+    virtual std::vector<Solution*> generateInitPopulation(int N, Panel& panel)=0;
 };
 
 class RandomInsertionGenerator: public PopulationGenerator{
     public:
-    std::vector<Solution&> generateInitPopulation(int N, Panel& panel) override;
+    std::vector<Solution*> generateInitPopulation(int N, Panel& panel) override;
 };
 
-class FitnessOperator {
-    public:
-    virtual double fitness(Solution& solution)=0;
-};
 
-class CostFitness: public FitnessOperator {
-    public:
-    CostFitness(Panel& p);
-    double fitness(Solution& solution) override;
-};
 
 class SelectionOperator {
     public:
-    virtual std::vector<Solution&> select(std::vector<Solution&> currentPop, FitnessOperator& fitOp) =0;
+    virtual std::vector<Solution*> select(std::vector<Solution*> currentPop) =0;
 };
 
 class MonteCarloSelection : public SelectionOperator{
     public:
-    std::vector<Solution&> select(std::vector<Solution&> currentPop, FitnessOperator& fitOp) override;   
+    std::vector<Solution*> select(std::vector<Solution*> currentPop) override;   
 };
 class GeneticOperator {
     public:
-    virtual std::vector<Solution&>  offspring(std::vector<Solution&> parents)=0;
+    virtual std::vector<Solution*>  offspring(std::vector<Solution*> parents)=0;
 };
 
-class CrossOver : public GeneticOperator {
-    std::vector<Solution&>  offspring(std::vector<Solution&> parents) override;
+class SubStringRevelsal : public GeneticOperator {
+    private:
+        int minAlt = 0;
+    public:
+        SubStringRevelsal(int minAlt);
+        std::vector<Solution*> offspring(std::vector<Solution*> parents) override;
 };
 
+class ReplacementOperator {
+    public:
+    virtual std::vector<Solution*> replacement(std::vector<Solution*> currentPop, std::vector<Solution*> offspring)=0;
+
+};
+
+class SteadyStateReplacement : public ReplacementOperator {
+    private:
+    int changeN = 5;
+    public : 
+        SteadyStateReplacement(int changeN);
+        std::vector<Solution*> replacement(std::vector<Solution*> currentPop, std::vector<Solution*> offspring) override;
+};
 #endif

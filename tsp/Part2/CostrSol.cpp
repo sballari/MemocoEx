@@ -3,16 +3,23 @@
 #include <iostream>
 #include <vector> 
 #include <cstdlib>
+#include <stdlib.h>
 #include <limits>
 #include <utility>
+#include <time.h>
+#include <random>
 #include "../DataGenerator.h"
 #include "../Solution.h"
 
-PathRappr RandomInsertion::get_sol(Panel& panel){
+
+PathRappr* RandomInsertion::get_sol(Panel& panel){
     // descr : algoritmo che risolve il problema TSP sul grafo G usando l'euristica Random Insertion. La soluzione ottenuta e' 2-approssimata
     // panel : grafo pesato
     // ret : tupla contenente il circuito hamiltoniano approssima con Random insertion e il tempo di esecuzione dell'algoritmo
+    std::random_device rd;  //Will be used to obtain a seed for the random number engine
+    std::mt19937 gen(rd());
     
+
     std::vector<int> circParz = std::vector<int> ();
     circParz.push_back(0);
     std::vector<int> nodi_non_usati = std::vector<int> ();
@@ -31,8 +38,10 @@ PathRappr RandomInsertion::get_sol(Panel& panel){
     circParz.push_back(0); //l'ultimo elemente per chiudere il ciclo [non serve, tanto per]
     nodi_non_usati.erase(minimo);
     
-    while (!nodi_non_usati.empty()) { 
-        int rint = rand()%nodi_non_usati.size();
+    while (!nodi_non_usati.empty()) {
+        //int rint = rand()%nodi_non_usati.size();
+        std::uniform_int_distribution<> dis(0, nodi_non_usati.size()-1);
+        int rint = dis(gen);        
         int k = nodi_non_usati[rint];
         //rimuovo il nodo k dai nodi non usati
         if (rint == nodi_non_usati.size()-1)
@@ -62,17 +71,29 @@ PathRappr RandomInsertion::get_sol(Panel& panel){
         //ho trovato dove inserire k, quindi inserisco del cammino
         circParz.insert(std::get<1>(minimaC),k);
     }
-    return PathRappr(circParz);
+    return new PathRappr(circParz,panel);
 }
 
+/*
 int main(){
+
     std::cout<<"generazione istanza"<<std::endl;
     auto panel = BoardPanel::create_gridPanel1(45,35,30);
     std::cout<<"fine generazione istanza"<<std::endl;
     
     std::cout<<"esecuzione Random Insertion"<<std::endl;
     auto sol = RandomInsertion::get_sol(panel);
-    sol.plot(panel);
-    std::cout<<"fine"<<std::endl;
+    sol.plot();
     
-}
+    
+    for (auto i = sol.path.begin(); i!=sol.path.end();i++){
+        std::cout<<*i<<" ,";
+    }
+    std::cout<<std::endl;
+    sol.substringReversal(5);
+    for (auto i = sol.path.begin(); i!=sol.path.end();i++){
+        std::cout<<*i<<" ,";
+    }
+    sol.plot();
+    std::cout<<"fine"<<std::endl;    
+}*/

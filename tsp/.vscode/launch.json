@@ -5,11 +5,14 @@
     "version": "0.2.0",
     "configurations": [
         {
-            "name": "g++ build and debug active file",
+            "name": "main debug",
             "type": "cppdbg",
             "request": "launch",
             "program": "${fileDirname}/${fileBasenameNoExtension}",
-            "args": [],
+            "args": ["-I /opt/ibm/ILOG/CPLEX_Studio129/cplex/include",
+                "/opt/ibm/ILOG/CPLEX_Studio129/cplex/lib/x86-64_linux/static_pic",
+                "-c"
+             ],
             "stopAtEntry": false,
             "cwd": "${workspaceFolder}",
             "environment": [],
