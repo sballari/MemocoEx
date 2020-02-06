@@ -27,9 +27,12 @@ std::vector<Solution*> RandomInsertionGenerator::generateInitPopulation(int N, P
 
 
 //SELECTION OPERATOR
-std::vector<Solution*> MonteCarloSelection::select(std::vector<Solution*> currentPop) {
+std::vector<Solution*> MonteCarloSelection::select(std::vector<Solution*>& currentPop) {
+    /*
+    @return : vector di puntatore ad oggetti di currentPop
+    */
     //Super-individuals may be selected too often
-    //auto p = std::vector<double>(); //TODO ricordarsi delle fitness gia' calcolate
+    //TODO ricordarsi delle fitness gia' calcolate
     double totalFitness = 0;
     for (auto i = currentPop.begin();i!=currentPop.end();i++){
         totalFitness += (*i)->fitness();
@@ -52,24 +55,28 @@ std::vector<Solution*>  SubStringRevelsal::offspring(std::vector<Solution*> pare
      parents : lista dei genitori selezionati
      description : substring reversal
     */
-   
+   auto offspring = std::vector<Solution*>();
    for (auto i=parents.begin(); i !=parents.end(); i++){
         //combine phase
         //substring reversal
-        (*i)->substringReversal(minAlt);  
+        Solution* son = (*i)->clone();
+        son->substringReversal(minAlt);  
+        offspring.push_back(son);
    }
 
-   return parents;
+   return offspring;
 }
 
 SteadyStateReplacement::SteadyStateReplacement(int changeN): changeN(changeN){}
 
-std::vector<Solution*> SteadyStateReplacement::replacement(std::vector<Solution*> currentPop, std::vector<Solution*> offspring){
+void SteadyStateReplacement::replacement(std::vector<Solution*>& currentPop, std::vector<Solution*>& offspring){
     /*
         @description : a few individuals (the worst ones) are replaced, la funzione rimuove le soluzioni uguali
         incremento di diversita', ripulisce anche completamento la offsprint non usata
+        l'offspring e i rimossi da current sono deletati.
+        #side effect su currentPop !
     */
-    
+    auto prevPop = currentPop;
     auto worstN = vector<vector<Solution *>::const_iterator>();
     //individuo gli N peggiori
     //peggiore alla fine 
@@ -137,7 +144,6 @@ std::vector<Solution*> SteadyStateReplacement::replacement(std::vector<Solution*
     if (bestN.size()<worstN.size()) throw string("check size non passato");
     auto b = bestN.begin();
     for (auto w = worstN.begin(); w!=worstN.end(); w++){
-        cout<<"cambio "<<**w<<"<->"<<**b<<endl;
         delete (**w); //elimino l'oggetto soluzione   
         currentPop.erase(*w);    //elimino il puntatore diventato vecchio
         auto ne = currentPop.insert(*w,**b); //inserisco l'elemento nuovo 
@@ -148,7 +154,25 @@ std::vector<Solution*> SteadyStateReplacement::replacement(std::vector<Solution*
     for (auto i = offspring.begin(); i!=offspring.end();i++){
         delete *i;
     }
-    return currentPop;
+    //test
+    cout<<"prev-current"<<endl;
+    auto p = prevPop.begin();
+    auto c = currentPop.begin();
+    for (;c!=currentPop.end();){
+        cout<<*p<<"\t"<<*c<<endl;
+        c++;p++;
+    }
+
+    return;
 }
 
- 
+bool NotImprovingCriteria::stop(std::vector<Solution*>& currentPop){
+    double sumFit=0;
+    for (auto i = currentPop.begin();i!=currentPop.end(); i++){
+        sumFit+=(*i)->fitness();
+    }
+    double current_avg = sumFit/currentPop.size();
+    return current_avg < previuslyAvgFitness;
+}
+NotImprovingCriteria::NotImprovingCriteria(double minIncr)
+: minIncrement(minIncr) {}

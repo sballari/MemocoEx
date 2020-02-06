@@ -13,13 +13,25 @@ class GeneticAlgorithm {
     //components 
     Panel& panel; 
     PopulationGenerator& initPopGen;
-    // FitnessOperator& fitOperator;
-
+    StoppingCriteria& stopCriteria;
+    SelectionOperator& selOperator;
+    GeneticOperator& genOperator;
+    ReplacementOperator& repOperator;
+    
     //DATA
-    std::vector<Solution&> currentPop = std::vector<Solution&>();
+    std::vector<Solution*> currentPop = std::vector<Solution*>();
+    
     public:
-    GeneticAlgorithm(Panel& panel, PopulationGenerator& pg, int initPopN);
-    void generateInitPop();
+    GeneticAlgorithm(
+        Panel& panel,
+        PopulationGenerator& pg,
+        int initPopN,
+        StoppingCriteria& stopCrit,
+        SelectionOperator& selOp,
+        GeneticOperator& genOp,
+        ReplacementOperator& repOp
+    );
+    Solution* run();
     
 
 };

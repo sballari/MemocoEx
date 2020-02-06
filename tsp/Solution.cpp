@@ -73,7 +73,6 @@ void PathRappr::substringReversal(int minAlt = 5) {
         stop = (k1 >= k2)? k1 : k2;
         delta = stop-start;
     }
-    std::cout<<"start: "<<start<<" , stop: "<<stop<<std::endl;
     for (int i=0; i<=(stop-start)/2; i++){
         int tmp = path[stop-i];
         path[stop-i] = path[start+i];
@@ -81,9 +80,7 @@ void PathRappr::substringReversal(int minAlt = 5) {
     }
 }
 
-//FITNESS OPERATOR///
-// CostFitness::CostFitness(Panel& p) : panel(p) {}
 
-// double CostFitness::fitness(Solution& solution){
-//     return solution.evaluate_cost(panel);
-// }
+PathRappr* PathRappr::clone() const{
+    return new PathRappr(*this);
+}

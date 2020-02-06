@@ -20,12 +20,16 @@ class RandomInsertionGenerator: public PopulationGenerator{
 
 class SelectionOperator {
     public:
-    virtual std::vector<Solution*> select(std::vector<Solution*> currentPop) =0;
+    virtual std::vector<Solution*> select(std::vector<Solution*>& currentPop) =0;
 };
 
 class MonteCarloSelection : public SelectionOperator{
+    /*
+    @description: ritorna un nuovo di vettore di puntatori a oggetti che esistono in
+    currentPop
+    */
     public:
-    std::vector<Solution*> select(std::vector<Solution*> currentPop) override;   
+    std::vector<Solution*> select(std::vector<Solution*>& currentPop) override;   
 };
 class GeneticOperator {
     public:
@@ -42,7 +46,7 @@ class SubStringRevelsal : public GeneticOperator {
 
 class ReplacementOperator {
     public:
-    virtual std::vector<Solution*> replacement(std::vector<Solution*> currentPop, std::vector<Solution*> offspring)=0;
+    virtual void replacement(std::vector<Solution*>& currentPop, std::vector<Solution*>& offspring)=0;
 
 };
 
@@ -51,6 +55,20 @@ class SteadyStateReplacement : public ReplacementOperator {
     int changeN = 5;
     public : 
         SteadyStateReplacement(int changeN);
-        std::vector<Solution*> replacement(std::vector<Solution*> currentPop, std::vector<Solution*> offspring) override;
+        void replacement(std::vector<Solution*>& currentPop, std::vector<Solution*>& offspring) override;
+};
+
+class StoppingCriteria {
+    public:
+        virtual bool stop(std::vector<Solution*>& currentPop) =0;
+};
+
+class NotImprovingCriteria : public StoppingCriteria{
+    private:
+        double minIncrement;
+        double previuslyAvgFitness = 0;
+    public :
+        bool stop( std::vector<Solution*>& currentPop) override;
+        NotImprovingCriteria(double minIncr = 0.001);
 };
 #endif

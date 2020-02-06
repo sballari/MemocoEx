@@ -8,7 +8,7 @@ CPX_LIBDIR  = $(CPX_BASE)/cplex/lib/x86-64_linux/static_pic
 CPX_LDFLAGS = -lcplex -lm -pthread -ldl
 MATPLOT = -std=c++11  -I/usr/include/python2.7 -lpython2.7
 
-OBJ = GenOp.o CostrSol.o ../DataGenerator.o ../Solution.o main.o 
+OBJ = GenOp.o CostrSol.o ../DataGenerator.o ../Solution.o main.o GenAlg.o
 
 
 %.o: %.cpp
