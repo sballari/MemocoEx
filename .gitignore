@@ -2,3 +2,7 @@ tsp/main
 tsp/main.o
 tsp/DataGenerator.h.gch
 tsp/DataGenerator.o
+tsp/matplotlib-cpp
+tsp/matplotlib-cpp
+tsp/Part2/GenOp.o
+tsp/Part2/main.o

@@ -67,8 +67,7 @@ SteadyStateReplacement::SteadyStateReplacement(int changeN): changeN(changeN){}
 std::vector<Solution*> SteadyStateReplacement::replacement(std::vector<Solution*> currentPop, std::vector<Solution*> offspring){
     /*
         @description : a few individuals (the worst ones) are replaced, la funzione rimuove le soluzioni uguali
-        incremento di diversita'
-        TODO : POSSIBILI PROBLEMI IN CASI DOVE MIGLIORE = PEGGIORE
+        incremento di diversita', ripulisce anche completamento la offsprint non usata
     */
     
     auto worstN = vector<vector<Solution *>::const_iterator>();
@@ -81,8 +80,10 @@ std::vector<Solution*> SteadyStateReplacement::replacement(std::vector<Solution*
         if (worstN.size()<changeN) {    
             //inserimento ordinato 
             if (fi > (*(worstN.back()))->fitness()) worstN.insert(worstN.end(),i);
-            if (fi < (*(worstN.front()))->fitness()) worstN.insert(worstN.begin(),i);
-            else worstN.insert(++worstN.begin(),i);
+            else {
+                if (fi < (*(worstN.front()))->fitness()) worstN.insert(worstN.begin(),i);
+                else worstN.insert(++worstN.begin(),i);
+            }
         } 
         else {
             //ho gia' changeN elementi
@@ -109,8 +110,10 @@ std::vector<Solution*> SteadyStateReplacement::replacement(std::vector<Solution*
         if (bestN.size()<changeN) {    
             //inserimento ordinato 
             if (fi > (*(bestN.front()))->fitness()) bestN.insert(bestN.begin(),i);
-            if (fi < (*(bestN.back()))->fitness()) bestN.insert(bestN.end(),i);
-            else bestN.insert(++bestN.begin(),i);
+            else {
+                if (fi < (*(bestN.back()))->fitness()) bestN.insert(bestN.end(),i);
+                else bestN.insert(++bestN.begin(),i);
+            }
         } 
         else {
             //ho gia' changeN elementi
@@ -131,16 +134,20 @@ std::vector<Solution*> SteadyStateReplacement::replacement(std::vector<Solution*
         }
     }
     //switch worstN with best N
-    
     if (bestN.size()<worstN.size()) throw string("check size non passato");
     auto b = bestN.begin();
     for (auto w = worstN.begin(); w!=worstN.end(); w++){
-        delete (**w); //elimino l'oggetto soluzione
-        auto ne = currentPop.insert(*w,**b); //inserisco l'elemento nuovo
-        currentPop.erase(ne+1); //elimino il puntatore diventato vecchio
+        cout<<"cambio "<<**w<<"<->"<<**b<<endl;
+        delete (**w); //elimino l'oggetto soluzione   
+        currentPop.erase(*w);    //elimino il puntatore diventato vecchio
+        auto ne = currentPop.insert(*w,**b); //inserisco l'elemento nuovo 
+        offspring.erase(*b); //lo rimuovo anche dalla offspring perche' questa dopo sara' ripulita
         b++;
     }
-    //fine test
+    //pulizia offspring
+    for (auto i = offspring.begin(); i!=offspring.end();i++){
+        delete *i;
+    }
     return currentPop;
 }
 
