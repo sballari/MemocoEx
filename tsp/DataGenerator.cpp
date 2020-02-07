@@ -120,7 +120,7 @@ void BoardPanel::plotSol(std::vector<double> decVar){
     int Nh = get_holesN();
     for (int i=0; i<Nh; i++){
         for (int j=0; j<Nh; j++){
-            if (decVar[Nh*Nh-Nh+i*Nh+j]==1){
+            if (decVar[Nh*Nh-Nh+i*Nh+j]>0.9 && decVar[Nh*Nh-Nh+i*Nh+j]<1.1 ){
                 plt::plot({holesX[i],holesX[j]},{holesY[i],holesY[j]},"black");
             }
         }
