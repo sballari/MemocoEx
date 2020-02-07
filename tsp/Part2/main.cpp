@@ -16,6 +16,7 @@ using std::vector;
 using std::string;
 
 int main(){
+    
 
     try {
         auto panel = BoardPanel::create_gridPanel1(45,35,30);
@@ -23,13 +24,21 @@ int main(){
         auto so = MonteCarloSelection();
         auto go = SubStringRevelsal(10);
         auto ro = SteadyStateReplacement(5);
-        auto sc = NotImprovingCriteria();
+        auto sc = NotImprovingCriteria(1);
         auto alg = GeneticAlgorithm(panel,pg,100,sc,so,go,ro);
         auto genetic_sol = alg.run();
         genetic_sol->plot();
     }
     catch(string m){
         cout<<m<<endl;
+    }
+    catch (std::exception& e)
+    {
+        std::cerr << "Exception caught : " << e.what() << std::endl;
+    }
+    catch (std::string e)
+    {
+        std::cerr << "Exception caught : " << e << std::endl;
     }
  
 }

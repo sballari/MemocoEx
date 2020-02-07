@@ -84,3 +84,11 @@ void PathRappr::substringReversal(int minAlt = 5) {
 PathRappr* PathRappr::clone() const{
     return new PathRappr(*this);
 }
+
+double Solution::avgFitness(const std::vector<Solution*>& s){
+    double sum=0;
+    for (auto i = s.begin(); i!=s.end(); i++){
+        sum += (*i)->fitness();
+    }
+    return sum/s.size();
+}

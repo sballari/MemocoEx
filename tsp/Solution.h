@@ -15,6 +15,7 @@ class Solution {
         virtual double evaluate_cost()=0;
         virtual double fitness() = 0;
         virtual void substringReversal(int minAlt)=0; //non e' detto che si puo' fare
+        static double avgFitness(const std::vector<Solution*>& s);
 };
 
 class PathRappr : public Solution {
@@ -34,7 +35,6 @@ class PathRappr : public Solution {
         void substringReversal(int minAlt) override;
 
 };
-
 // class FitnessOperator {
 //     public:
 //     virtual double fitness(Solution& solution)=0;

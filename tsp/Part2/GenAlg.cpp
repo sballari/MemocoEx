@@ -37,6 +37,7 @@ Solution* GeneticAlgorithm::run(){
         repOperator.replacement(currentPop,offspring);
         std::cout<<"effettuata replacement"<<endl;
         //current pop aggiorname per side effect
+        cout<<"new avgFitness : "<<Solution::avgFitness(currentPop)<<endl;
         iterazione++;
         std::cout<<"--------------------------"<<endl;
     }

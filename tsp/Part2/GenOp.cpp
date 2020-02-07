@@ -76,8 +76,12 @@ void SteadyStateReplacement::replacement(std::vector<Solution*>& currentPop, std
         l'offspring e i rimossi da current sono deletati.
         #side effect su currentPop !
     */
-    auto prevPop = currentPop;
+    offspring.reserve(offspring.size());
+    currentPop.reserve(currentPop.size());
+
+    //test fine
     auto worstN = vector<vector<Solution *>::const_iterator>();
+    worstN.reserve(changeN);
     //individuo gli N peggiori
     //peggiore alla fine 
     //migliore all'inizio
@@ -111,6 +115,7 @@ void SteadyStateReplacement::replacement(std::vector<Solution*>& currentPop, std
     }
     //trovati i peggiori
     auto bestN = vector<vector<Solution *>::const_iterator>();
+    bestN.reserve(changeN);
     bestN.push_back(offspring.begin());
     for (auto i = ++offspring.begin(); i!=offspring.end(); i++){
         auto fi = (*i)->fitness();
@@ -142,28 +147,18 @@ void SteadyStateReplacement::replacement(std::vector<Solution*>& currentPop, std
     }
     //switch worstN with best N
     if (bestN.size()<worstN.size()) throw string("check size non passato");
+    
     auto b = bestN.begin();
     for (auto w = worstN.begin(); w!=worstN.end(); w++){
         delete (**w); //elimino l'oggetto soluzione   
         currentPop.erase(*w);    //elimino il puntatore diventato vecchio
         auto ne = currentPop.insert(*w,**b); //inserisco l'elemento nuovo 
         offspring.erase(*b); //lo rimuovo anche dalla offspring perche' questa dopo sara' ripulita
+        offspring.insert(*b,nullptr);
         b++;
     }
     //pulizia offspring
-    for (auto i = offspring.begin(); i!=offspring.end();i++){
-        delete *i;
-    }
-    //test
-    cout<<"prev-current"<<endl;
-    auto p = prevPop.begin();
-    auto c = currentPop.begin();
-    for (;c!=currentPop.end();){
-        cout<<*p<<"\t"<<*c<<endl;
-        c++;p++;
-    }
-
-    return;
+    for (auto i = offspring.begin(); i!=offspring.end();i++) if (*i!=nullptr) delete *i;
 }
 
 bool NotImprovingCriteria::stop(std::vector<Solution*>& currentPop){
@@ -172,7 +167,10 @@ bool NotImprovingCriteria::stop(std::vector<Solution*>& currentPop){
         sumFit+=(*i)->fitness();
     }
     double current_avg = sumFit/currentPop.size();
-    return current_avg < previuslyAvgFitness;
+
+    bool stop =  current_avg - previuslyAvgFitness < minIncrement;
+    previuslyAvgFitness = current_avg;
+    return stop;
 }
 NotImprovingCriteria::NotImprovingCriteria(double minIncr)
 : minIncrement(minIncr) {}
