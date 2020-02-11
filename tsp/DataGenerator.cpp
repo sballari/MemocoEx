@@ -4,6 +4,8 @@
 #include <vector> 
 #include "matplotlib-cpp/matplotlibcpp.h"
 #include <iostream>
+using std::cout;
+using std::endl;
 
 namespace plt = matplotlibcpp;
 
@@ -17,6 +19,7 @@ BoardPanel BoardPanel::create_gridPanel(double base, double height,int maxH){
             //bias: preference on the initial positions
             int rowN = height/(ButtonH+0.10); //10 mm of margin
             int holesN = base/(ButtonB+0.5);
+            if (holesN*rowN < maxH) throw std::string("spazio insufficente nel pannello");
             std::vector<double> holesX = std::vector<double>();
             std::vector<double> holesY = std::vector<double>();
             
@@ -42,7 +45,7 @@ BoardPanel BoardPanel::create_gridPanel1(double base, double height,int maxH){
 
     int rowN = height/(ButtonH+0.10); //10 mm of margin
     int holesN = base/(ButtonB+0.5);
-    
+    if (holesN*rowN < maxH) throw std::string("spazio insufficente nel pannello");
     for (int i=0; i<maxH; i++){
         int rx = rand()%holesN+(ButtonH/2);
         int ry = rand()%rowN*ButtonB+(ButtonB/2);

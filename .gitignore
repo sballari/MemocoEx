@@ -2,8 +2,6 @@ tsp/main
 tsp/main.o
 tsp/DataGenerator.h.gch
 tsp/DataGenerator.o
-tsp/matplotlib-cpp
-tsp/matplotlib-cpp
 tsp/Part2/GenOp.o
 tsp/Part2/main.o
 tsp/Part2/GenOp.o
@@ -19,4 +17,3 @@ tsp/Part1/lp_file/tsp.lp
 tsp/Part1/model1.o
 tsp/Part1/main.o
 tsp/Part1/main
-tsp/matplotlib-cpp
