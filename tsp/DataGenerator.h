@@ -2,6 +2,7 @@
 #define Data_gen
 
 #include <cstdlib>
+#include <string>
 #include <vector> 
 
 class Panel { 
@@ -9,7 +10,7 @@ class Panel {
         virtual ~Panel(){}
         static const double ButtonB; //length of a hole
         static const double ButtonH; //heigth of a hole
-        virtual double get_euc_dist(int a, int b)=0;
+        virtual double get_dist(int a, int b)=0;
         virtual std::vector<double> getPoint(int label) =0;
         virtual int get_holesN()=0;
         virtual void plot(bool show)=0;
@@ -22,11 +23,11 @@ class BoardPanel : public Panel   {
         std::vector<double> holesY;
         double base;
         double height;
-
-        BoardPanel(double b, double h,std::vector<double> hx, std::vector<double> hy);
+        std::string dist_type ; //{'euc','man'}
+        BoardPanel(double b, double h,std::vector<double> hx, std::vector<double> hy, std::string dist_type = "euc");
     public:
         ~BoardPanel(){}
-        double  get_euc_dist(int a, int b) override; 
+        double  get_dist(int a, int b) override;
         int  get_holesN() override;
         void plot(bool show) override;
         void plotSol(std::vector<double> decVar) override;

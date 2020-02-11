@@ -59,14 +59,26 @@ double euc_dist(double xa,double ya, double xb, double yb){
     double dist = pow((xa-xb),2) + pow((ya-yb),2);
     return sqrt(dist);
 }
-double BoardPanel::get_euc_dist(int holeA, int holeB){
+double man_dist(double xa,double ya, double xb, double yb){
+    double dist = abs(xa-xb) + abs(ya-yb);
+    return dist;
+}
+
+double BoardPanel::get_dist(int holeA, int holeB){
+    double dist = -1;
     if (holeA>=get_holesN() || holeB>=get_holesN()) {
         throw "Exception: illegal hole index";
     } else {
-        double dist = euc_dist(holesX[holeA],holesY[holeA],holesX[holeB],holesY[holeB]);
-        return dist;
+        if (holeA == holeB) return 0;
+        if (dist_type=="euc")
+            dist = euc_dist(holesX[holeA],holesY[holeA],holesX[holeB],holesY[holeB]);
+        if (dist_type=="man")
+            dist = man_dist(holesX[holeA],holesY[holeA],holesX[holeB],holesY[holeB]);
     }
+    if (dist < 0) throw "Exception: illegal dist type "+dist_type;
+    return dist;
 }
+
 int BoardPanel::get_holesN(){
     return this->holesX.size();
 }
@@ -93,13 +105,15 @@ BoardPanel::BoardPanel(){
     this->height = 0;
     holesX = std::vector<double>();
     holesY = std::vector<double>();
+    std::string dist_type = "euc";
 }
 
-BoardPanel::BoardPanel(double b, double h,std::vector<double> hx, std::vector<double> hy){
+BoardPanel::BoardPanel(double b, double h,std::vector<double> hx, std::vector<double> hy, std::string dist_type){
     this->base = b;
     this->height = h;
     holesX = hx;
     holesY = hy;
+    this->dist_type = dist_type;
 }
 
 
