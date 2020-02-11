@@ -12,3 +12,11 @@ tsp/Part2/GenAlg.o
 tsp/Part2/main.o
 tsp/Part2/GenOp.o
 tsp/Solution.o
+tsp/Part1/main.o
+tsp/Part1/model1.o
+tsp/Part1/main
+tsp/Part1/lp_file/tsp.lp
+tsp/Part1/model1.o
+tsp/Part1/main.o
+tsp/Part1/main
+tsp/matplotlib-cpp
