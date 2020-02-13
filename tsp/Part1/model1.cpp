@@ -14,24 +14,18 @@ using std::endl;
 
 class TSPModel {
     public:
-        static int idX(int i, int j,int Nh){
-            return -(i+1)+ i*Nh+j; // senza rimozione cappi
-        }
-        static int idY(int i, int j,int Nh){
-            int offset = Nh*Nh-Nh ; // il -Nh toglie le variabili x_i_0
-            return offset + i*Nh+j; // senza rimozione cappi 
-
-        }
 
         static void setupLP(CEnv env, Prob lp, Panel* panel){
             int Nh = panel->get_holesN();
+            int Xs[Nh][Nh];
+            int Ys[Nh][Nh];
             // int startH = 0;
             std::vector<char> var_types = std::vector<char>();
             std::vector<double> var_lbs = std::vector<double>();
             std::vector<double> var_ubs = std::vector<double>();
             std::vector<char*> var_names = std::vector<char*>(); 
             std::vector<double> obj_fun_coefs = std::vector<double>();       
-            
+            int pos = 0;
             for(int i =0; i<Nh; i++){ //var x
                 for (int j = 1; j<Nh; j++){
                     //if (i!=j){
@@ -42,6 +36,8 @@ class TSPModel {
                         snprintf(var_name,12,"x_%d_%d",i,j);
                         var_names.push_back(var_name);
                         obj_fun_coefs.push_back(0.0);
+                        Xs[i][j]=pos;
+                        pos++;
                     //}
                 }
             }
@@ -56,6 +52,8 @@ class TSPModel {
                         snprintf(var_name,12,"y_%d_%d",i,j);
                         var_names.push_back(var_name);
                         obj_fun_coefs.push_back(panel->get_dist(i,j));
+                        Ys[i][j]=pos;
+                        pos++;
                     //}
                 }      
             }
@@ -73,7 +71,7 @@ class TSPModel {
             //costraints per non usare i cappi
             for (int i =1; i<Nh; i++){
                 matbegin.push_back(matbegin2use);
-                idx.push_back(idY(i,i,Nh));
+                idx.push_back(Ys[i][i]);
                 coef.push_back(1);
                 senses.push_back('E');
                 constValues.push_back(0.0);
@@ -85,14 +83,14 @@ class TSPModel {
                 //somma archi entranti - somma archi uscenti da k
                 for(int i=0; i<Nh; i++){ //archi entranti
                     //if (i!=k){
-                        idx.push_back(idX(i,k,Nh));
+                        idx.push_back(Xs[i][k]);
                         coef.push_back(1);
                         matbegin2use++;
                     //}
                 }
                 for(int j=1; j<Nh; j++){ //archi uscenti
                     //if (j!=k) {
-                        idx.push_back(idX(k,j,Nh));
+                        idx.push_back(Xs[k][j]);
                         coef.push_back(-1);
                         matbegin2use++;
                     //}
@@ -106,7 +104,7 @@ class TSPModel {
 
                 for (int j=0; j<Nh; j++){ //somma nodi uscenti
                     //if (i!=j){
-                        idx.push_back(idY(i,j,Nh));
+                        idx.push_back(Ys[i][j]);
                         coef.push_back(1);
                         matbegin2use++;
                     //}
@@ -120,7 +118,7 @@ class TSPModel {
 
                 for (int i=0; i<Nh; i++){//somma nodi entranti
                     //if (i!=j) {    
-                        idx.push_back(idY(i,j,Nh));
+                        idx.push_back(Ys[i][j]);
                         coef.push_back(1);
                         matbegin2use++;
                     //}
@@ -133,8 +131,8 @@ class TSPModel {
                 for(int j=1; j<Nh; j++){
                     //if (i!=j){
                         matbegin.push_back(matbegin2use);
-                        idx.push_back(idX(i,j,Nh));
-                        idx.push_back(idY(i,j,Nh));
+                        idx.push_back(Xs[i][j]);
+                        idx.push_back(Ys[i][j]);
                         coef.push_back(1);
                         coef.push_back(-Nh+1);
                         senses.push_back('L');
