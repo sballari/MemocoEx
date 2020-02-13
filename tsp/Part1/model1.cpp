@@ -15,13 +15,12 @@ using std::endl;
 class TSPModel {
     public:
         static int idX(int i, int j,int Nh){
-            return -(i+1)+ i*Nh+j; // rimozione cappi
-            // return i*Nh+j; //! non rimuovo i cappi
+            return -(i+1)+ i*Nh+j; // senza rimozione cappi
         }
         static int idY(int i, int j,int Nh){
-            int offset = Nh*Nh-Nh ;
-            return offset + i*Nh+j; //rimozione cappi forzata
-            // return Nh*Nh+i*Nh+j; //! non rimuovo i cappi
+            int offset = Nh*Nh-Nh ; // il -Nh toglie le variabili x_i_0
+            return offset + i*Nh+j; // senza rimozione cappi 
+
         }
 
         static void setupLP(CEnv env, Prob lp, Panel* panel){
@@ -32,15 +31,15 @@ class TSPModel {
             std::vector<double> var_ubs = std::vector<double>();
             std::vector<char*> var_names = std::vector<char*>(); 
             std::vector<double> obj_fun_coefs = std::vector<double>();       
-
+            
             for(int i =0; i<Nh; i++){ //var x
                 for (int j = 1; j<Nh; j++){
                     //if (i!=j){
                         var_types.push_back('C');
                         var_lbs.push_back(0.0);
                         var_ubs.push_back(CPX_INFBOUND);
-                        char* var_name = new char[10];
-                        snprintf(var_name,10,"x_%d_%d",i,j);
+                        char* var_name = new char[12];
+                        snprintf(var_name,12,"x_%d_%d",i,j);
                         var_names.push_back(var_name);
                         obj_fun_coefs.push_back(0.0);
                     //}
@@ -53,8 +52,8 @@ class TSPModel {
                         var_types.push_back('B');
                         var_lbs.push_back(0.0);
                         var_ubs.push_back(1.0);
-                        char* var_name = new char[10];
-                        snprintf(var_name,10,"y_%d_%d",i,j);
+                        char* var_name = new char[12];
+                        snprintf(var_name,12,"y_%d_%d",i,j);
                         var_names.push_back(var_name);
                         obj_fun_coefs.push_back(panel->get_dist(i,j));
                     //}
@@ -72,14 +71,14 @@ class TSPModel {
 
             int matbegin2use = 0;
             //costraints per non usare i cappi
-            // for (int i =1; i<Nh; i++){
-            //     matbegin.push_back(matbegin2use);
-            //     idx.push_back(idY(i,i,Nh));
-            //     coef.push_back(1);
-            //     senses.push_back('E');
-            //     constValues.push_back(0.0);
-            //     matbegin2use++;
-            // }
+            for (int i =1; i<Nh; i++){
+                matbegin.push_back(matbegin2use);
+                idx.push_back(idY(i,i,Nh));
+                coef.push_back(1);
+                senses.push_back('E');
+                constValues.push_back(0.0);
+                matbegin2use++;
+            }
             for (int k = 1; k < Nh; k++) //zero nodo partente
             {
                 matbegin.push_back(matbegin2use);

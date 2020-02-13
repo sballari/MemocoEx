@@ -50,7 +50,7 @@ int performExperimentEM(std::vector<Panel*> instances){
             auto duration_construction = duration_cast<microseconds>(stop_construction - start_construction);
             timeSetting.push_back(duration_construction.count()); 
             //write the problem in a file
-            // CHECKED_CPX_CALL( CPXwriteprob, env, lp, "lp_file/tsp.lp", NULL );
+            CHECKED_CPX_CALL( CPXwriteprob, env, lp, "lp_file/tsp.lp", NULL );
             // optimize
             auto start_optimize = high_resolution_clock::now(); 
             CHECKED_CPX_CALL( CPXmipopt, env, lp );
@@ -97,7 +97,7 @@ int performExperimentEM(std::vector<Panel*> instances){
 
 int main(){
     try {
-    int exp =0;
+    int exp =2;
     auto instances = std::vector<BoardPanel> ();
     auto p = std::vector<Panel*> ();
     switch (exp){
@@ -148,11 +148,12 @@ int main(){
 int main1(){
     try
 	{
-            auto a = BoardPanel::create_gridPanel1(100,70,15);
+            auto a = BoardPanel::create_gridPanel1(100,70,9);
             DECL_ENV(env);
             DECL_PROB( env, lp);
             // setup LP
             TSPModel::setupLP(env, lp,&a);
+            // cout<<"fine setupLP"<<endl;
             //write the problem in a file
             CHECKED_CPX_CALL( CPXwriteprob, env, lp, "lp_file/tsp.lp", NULL );
             // optimize
@@ -182,5 +183,4 @@ int main1(){
 	{
 		std::cout << ">>>EXCEPTION: " << e << std::endl;
 	}
-	return 0;
 }
