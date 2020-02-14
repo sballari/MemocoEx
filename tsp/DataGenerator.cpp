@@ -4,6 +4,7 @@
 #include <vector> 
 #include "matplotlib-cpp/matplotlibcpp.h"
 #include <iostream>
+#include <random>
 using std::cout;
 using std::endl;
 
@@ -13,10 +14,14 @@ const double Panel::ButtonB = 1.8; //standard hole dimension
 const double Panel::ButtonH = 8.6;
 
 
-BoardPanel BoardPanel::create_gridPanel(double base, double height,int maxH){
-            //every block has probability 0.5 to be choose so the algorithm will put the
+BoardPanel BoardPanel::create_gridPanel(double base, double height,int maxH,double p){
+            //every block has probability p to be choose so the algorithm will put the
             //block in the first positizions of the grid
             //bias: preference on the initial positions
+            std::random_device rd;  
+            std::mt19937 gen(rd()); 
+            std::uniform_real_distribution<double> dis(0, 1);
+ 
             int rowN = height/(ButtonH+0.10); //10 mm of margin
             int holesN = base/(ButtonB+0.5);
             if (holesN*rowN < maxH) throw std::string("spazio insufficente nel pannello");
@@ -25,7 +30,7 @@ BoardPanel BoardPanel::create_gridPanel(double base, double height,int maxH){
             
             for (int r=0; r<rowN && holesX.size()<maxH; r++){
                 for (int c=0; c<holesN && holesX.size()<maxH; c++){
-                    if(rand()%1<0.2){
+                    if(dis(gen)<p){
                         double y = r*ButtonH+(ButtonH/2);
                         double x = c*ButtonB+(ButtonB/2);
                         holesX.push_back(x);
@@ -43,13 +48,23 @@ BoardPanel BoardPanel::create_gridPanel1(double base, double height,int maxH){
     std::vector<double> holesX = std::vector<double>();
     std::vector<double> holesY = std::vector<double>();
 
+    std::random_device rd;  
+    std::mt19937 gen(rd()); 
+    
+
     int rowN = height/(ButtonH+0.10); //10 mm of margin
     int holesN = base/(ButtonB+0.5);
+
+    std::uniform_int_distribution<> disX(0, holesN);
+    std::uniform_int_distribution<> disY(0, rowN);
+
     if (holesN*rowN < maxH) throw std::string("spazio insufficente nel pannello");
     for (int i=0; i<maxH; i++){
-        int rx = rand()%holesN+(ButtonH/2);
-        int ry = rand()%rowN*ButtonB+(ButtonB/2);
+        int rx = disX(gen)+(ButtonH/2);
+        int ry = disY(gen)*ButtonB+(ButtonB/2);
+        
         if (rx>2 && rx<base-2 && ry>2 && ry<height-2) { //bordi del pannello
+        //if (true){
             holesX.push_back(rx);
             holesY.push_back(ry);
         } else i--;
@@ -90,10 +105,15 @@ int BoardPanel::get_holesN(){
 BoardPanel BoardPanel::create_weirdPanel(double base, double height,int maxH){
     auto hX = std::vector<double>();
     auto hY = std::vector<double>();
+
+    std::random_device rd;  
+    std::mt19937 gen(rd()); 
+    std::uniform_real_distribution<double> dis(0, 1);
+    
     for (int i =0; i<maxH; i++){
         // (rx,ry) center of the button
-        double rx = (rand()/(double)RAND_MAX)*base;
-        double ry = (rand()/(double)RAND_MAX)*height;
+        double rx = (dis(gen))*base;
+        double ry = (dis(gen))*height;
         if (rx+(ButtonB/2)<base && ry+(ButtonH/2)<height){ //feasible button
             hX.push_back(rx);
             hY.push_back(ry);
