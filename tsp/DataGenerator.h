@@ -15,7 +15,7 @@ class Panel {
         virtual int get_holesN()=0;
         virtual void plot(bool show)=0;
         virtual void plotSol(std::vector<double> decVar)=0;
-        
+        virtual void write(std::string file_name)=0;
 };
 class BoardPanel : public Panel   {
     private: 
@@ -32,6 +32,9 @@ class BoardPanel : public Panel   {
         void plot(bool show) override;
         void plotSol(std::vector<double> decVar) override;
         std::vector<double> getPoint(int label) override;
+        void write(std::string file_name) override;
+        void writePaolo(std::string file_name);
+        static BoardPanel read(std::string file_name);
 
         BoardPanel();
 

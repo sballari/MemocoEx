@@ -5,6 +5,8 @@
 #include "matplotlib-cpp/matplotlibcpp.h"
 #include <iostream>
 #include <random>
+#include <fstream>
+#include <utility>
 using std::cout;
 using std::endl;
 
@@ -60,8 +62,8 @@ BoardPanel BoardPanel::create_gridPanel1(double base, double height,int maxH){
 
     if (holesN*rowN < maxH) throw std::string("spazio insufficente nel pannello");
     for (int i=0; i<maxH; i++){
-        int rx = disX(gen)+(ButtonH/2);
-        int ry = disY(gen)*ButtonB+(ButtonB/2);
+        int rx = disX(gen)*ButtonB+(ButtonB/2);
+        int ry = disY(gen)*ButtonH+(ButtonH/2);
         
         if (rx>2 && rx<base-2 && ry>2 && ry<height-2) { //bordi del pannello
         //if (true){
@@ -171,4 +173,77 @@ std::vector<double> BoardPanel::getPoint(int label) {
     }
     return {holesX[label],holesY[label]};
     
+}
+
+void BoardPanel::write(std::string file_name) {
+    //DSimpone eccher . dat codifica
+    //numero_node\n base\n heigth \n x1 y1 x2 y2 ...
+    std::ofstream output;
+    output.open(file_name, std::ofstream::out);
+    if (!output) {
+        throw std::string("file .dat non aprile");
+    } else {
+        int Nh = this->get_holesN();
+        output<<Nh<<std::endl;
+        output<<base<<std::endl;
+        output<<height<<std::endl;
+        for (int i =0; i<Nh ; i++){
+            std::vector<double> xy = this->getPoint(i);
+            output<<xy[0]<<" "<<xy[1]<<" ";
+        }
+        output<<std::endl;
+        output.close();
+    }
+}
+
+BoardPanel BoardPanel::read(std::string file_name) {
+    //DSimpone eccher . dat codifica
+    //numero_node \n x1 y1 x2 y2 ...
+    std::ifstream input;
+    input.open(file_name, std::ifstream::in);
+    if (!input) {
+        throw std::string("file .dat non aprile");
+    } else {
+        std::vector<double> holesX = std::vector<double>();
+        std::vector<double> holesY = std::vector<double>();
+        int Nh;
+        double base;
+        double height;
+        input>>Nh;
+        input>>base;
+        input>>height;
+        input>>Nh;
+        for (int i =0; i<Nh ; i++){
+            double x;
+            double y;
+            input>>x;
+            input>>y;
+            holesX.push_back(x);
+            holesY.push_back(y);
+        }
+        input.close();
+        return BoardPanel(base,height,holesX,holesY);
+
+    }
+}
+
+void BoardPanel::writePaolo(std::string file_name) {
+    //DSimpone eccher . dat codifica
+    //numero_node\n base\n heigth \n x1 y1 x2 y2 ...
+    std::ofstream output;
+    output.open(file_name, std::ofstream::out);
+    if (!output) {
+        throw std::string("file .dat non aprile");
+    } else {
+        int Nh = this->get_holesN();
+        output<<Nh<<std::endl;
+        for (int i =0; i<Nh ; i++){
+            for (int j=0; j<Nh; j++){
+                double dist = this->get_dist(i,j);
+                output<<dist<<" ";
+            }
+            output<<std::endl;
+        }
+        output.close();
+    }
 }

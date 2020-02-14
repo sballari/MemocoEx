@@ -86,7 +86,7 @@ int performExperimentEM(std::vector<Panel*> instances){
 	}
 	catch(std::exception& e)
 	{
-		std::cout << ">>>EXCEPTION: " << e.what() << std::endl;
+		// std::cout << ">>>EXCEPTION: " << e.what() << std::endl;
 	}
 	return 0;
 }
@@ -97,30 +97,38 @@ int performExperimentEM(std::vector<Panel*> instances){
 
 int main(){
     try {
-    int exp =2;
+    int exp =4;
     auto instances = std::vector<BoardPanel> ();
     auto p = std::vector<Panel*> ();
     switch (exp){
-        case 0 : 
+        case 1 : 
+            {
             std::cout<<"esecuzione grid1"<<std::endl;
-            instances.push_back(BoardPanel::create_gridPanel1(50,70,5));
-            instances.push_back(BoardPanel::create_gridPanel1(50,70,10));
-            instances.push_back(BoardPanel::create_gridPanel1(50,70,20));
-            instances.push_back(BoardPanel::create_gridPanel1(50,70,30));
-            instances.push_back(BoardPanel::create_gridPanel1(45,35,30));
+            instances.push_back(BoardPanel::create_gridPanel1(1000,1000,5));
+            instances.push_back(BoardPanel::create_gridPanel1(1000,1000,10));
+            instances.push_back(BoardPanel::create_gridPanel1(1000,1000,20));
+            instances.push_back(BoardPanel::create_gridPanel1(1000,1000,30));
+            instances.push_back(BoardPanel::create_gridPanel1(1000,1000,40));
+            instances.push_back(BoardPanel::create_gridPanel1(1000,1000,50));
+            instances.push_back(BoardPanel::create_gridPanel1(1000,1000,60));
+            instances.push_back(BoardPanel::create_gridPanel1(1000,1000,70));
+            }
         break;
-        case 1 :
+        case 0 :
+            {
             std::cout<<"esecuzione grid"<<std::endl;
-            instances.push_back(BoardPanel::create_gridPanel(10000,10000,5));
-            instances.push_back(BoardPanel::create_gridPanel(10000,10000,10));
-            instances.push_back(BoardPanel::create_gridPanel(10000,10000,20));
-            instances.push_back(BoardPanel::create_gridPanel(10000,10000,30));
-            instances.push_back(BoardPanel::create_gridPanel(10000,10000,40));
-            instances.push_back(BoardPanel::create_gridPanel(10000,10000,50));
-            instances.push_back(BoardPanel::create_gridPanel(10000,10000,60));
-            instances.push_back(BoardPanel::create_gridPanel(10000,10000,70));
+            instances.push_back(BoardPanel::create_gridPanel(1000,1000,5));
+            instances.push_back(BoardPanel::create_gridPanel(1000,1000,10));
+            instances.push_back(BoardPanel::create_gridPanel(1000,1000,20));
+            instances.push_back(BoardPanel::create_gridPanel(1000,1000,30));
+            instances.push_back(BoardPanel::create_gridPanel(1000,1000,40));
+            // instances.push_back(BoardPanel::create_gridPanel(1000,1000,50));
+            // instances.push_back(BoardPanel::create_gridPanel(1000,1000,60));
+            // instances.push_back(BoardPanel::create_gridPanel(1000,1000,70));
+            }
         break;
         case 2:
+            {
             std::cout<<"esecuzione weird"<<std::endl;
             instances.push_back(BoardPanel::create_weirdPanel(1000,1000,5));
             instances.push_back(BoardPanel::create_weirdPanel(1000,1000,10));
@@ -130,6 +138,48 @@ int main(){
             instances.push_back(BoardPanel::create_weirdPanel(1000,1000,50));
             instances.push_back(BoardPanel::create_weirdPanel(1000,1000,60));
             instances.push_back(BoardPanel::create_weirdPanel(1000,1000,70));
+            }
+        break;
+        case 3:
+            {
+            cout<<"creazione istanze"<<endl;
+            cout<<"creazione weird"<<endl;
+            auto a1 = BoardPanel::create_weirdPanel(20,30,20);
+            cout<<"creazione grid"<<endl;
+            auto a2 = BoardPanel::create_gridPanel(20,30,20);
+            cout<<"creazione grid1"<<endl;
+            auto a3 = BoardPanel::create_gridPanel1(20,30,20);
+            
+            a1.plot(true);
+            a2.plot(true);
+            a3.plot(true);
+            }
+        break;
+        case 4:
+            {
+            /*
+            auto low = BoardPanel::read("Data/grid1_20.dat");
+            auto med = BoardPanel::read("Data/grid1_30.dat");
+            auto large = BoardPanel::read("Data/grid1_80.dat");
+            */
+            
+            auto low = BoardPanel::create_gridPanel1(100,100,30);
+            auto med = BoardPanel::create_gridPanel1(100,100,60);
+            auto large = BoardPanel::create_gridPanel1(100,100,100);
+            low.write("Data/grid1_30.dat");
+            med.write("Data/grid1_60.dat");
+            large.write("Data/grid1_100.dat");
+            low.writePaolo("Data/grid1_30P.dat");
+            med.writePaolo("Data/grid1_60P.dat");
+            large.writePaolo("Data/grid1_100P.dat");
+            
+            low.plot(true);
+            med.plot(true);
+            large.plot(true);
+            instances.push_back(low);
+            instances.push_back(med);
+            instances.push_back(large);
+            }
         break;
     }
     for (auto i = instances.begin(); i!=instances.end(); i++){
@@ -183,4 +233,5 @@ int main1(){
 	{
 		std::cout << ">>>EXCEPTION: " << e << std::endl;
 	}
+    return 0;
 }
