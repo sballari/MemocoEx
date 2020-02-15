@@ -62,8 +62,8 @@ BoardPanel BoardPanel::create_gridPanel1(double base, double height,int maxH){
 
     if (holesN*rowN < maxH) throw std::string("spazio insufficente nel pannello");
     for (int i=0; i<maxH; i++){
-        int rx = disX(gen)*ButtonB+(ButtonB/2);
-        int ry = disY(gen)*ButtonH+(ButtonH/2);
+        double rx = disX(gen)*ButtonB+(ButtonB/2);
+        double ry = disY(gen)*ButtonH+(ButtonH/2);
         
         if (rx>2 && rx<base-2 && ry>2 && ry<height-2) { //bordi del pannello
         //if (true){
@@ -152,14 +152,15 @@ void BoardPanel::plot(bool show = true){
     plt::scatter(holesX,holesY);
     if (show) plt::show();
 }
-void BoardPanel::plotSol(std::vector<double> decVar){
+void BoardPanel::plotSol(std::vector<double> decVar,int* Ys){
 
     plot(false);
     
     int Nh = get_holesN();
     for (int i=0; i<Nh; i++){
         for (int j=0; j<Nh; j++){
-            if (decVar[Nh*Nh-Nh+i*Nh+j]>0.9 && decVar[Nh*Nh-Nh+i*Nh+j]<1.1 ){
+            if (i==j) continue;
+            if (decVar[Ys[i*Nh+j]]>0.9 && decVar[Ys[i*Nh+j]]<1.1 ){
                 plt::plot({holesX[i],holesX[j]},{holesY[i],holesY[j]},"black");
             }
         }
@@ -206,13 +207,12 @@ BoardPanel BoardPanel::read(std::string file_name) {
     } else {
         std::vector<double> holesX = std::vector<double>();
         std::vector<double> holesY = std::vector<double>();
-        int Nh;
+        double Nh;
         double base;
         double height;
         input>>Nh;
         input>>base;
         input>>height;
-        input>>Nh;
         for (int i =0; i<Nh ; i++){
             double x;
             double y;
@@ -221,7 +221,6 @@ BoardPanel BoardPanel::read(std::string file_name) {
             holesX.push_back(x);
             holesY.push_back(y);
         }
-        input.close();
         return BoardPanel(base,height,holesX,holesY);
 
     }
