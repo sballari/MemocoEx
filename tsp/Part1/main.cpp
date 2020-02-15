@@ -26,7 +26,7 @@ const int startH = 0; //nodo partenza
 int status;
 char errmsg[BUF_SIZE];
 
-int performExperimentEM(std::vector<Panel*> instances){
+int performExperimentEM(std::vector<Panel*> instances,bool plot = false,double timeLimit=-1){
     try
 	{
         auto timeSetting = std::vector<double>();
@@ -38,14 +38,17 @@ int performExperimentEM(std::vector<Panel*> instances){
             // init
             DECL_ENV(env);
             DECL_PROB( env, lp);
+            if (timeLimit>0) CHECKED_CPX_CALL(CPXsetdblparam,env,1039,timeLimit);
             //problem info
             std::cout<<"-------------------------------------------"<<std::endl;
             std::cout<<"PROBLEM: "<<in<<std::endl;
-            std::cout<<"holes number : "<<(instances[in])->get_holesN()<<std::endl;
+            int Nh = (instances[in])->get_holesN();
+            std::cout<<"holes number : "<<Nh<<std::endl;
 
             // setup LP
             auto start_construction = high_resolution_clock::now(); 
-            TSPModel::setupLP(env, lp,instances[in]);
+            int Y[Nh*Nh];
+            TSPModel::setupLP(env, lp,instances[in],Y,true);
             auto stop_construction = high_resolution_clock::now(); 
             auto duration_construction = duration_cast<microseconds>(stop_construction - start_construction);
             timeSetting.push_back(duration_construction.count()); 
@@ -59,8 +62,7 @@ int performExperimentEM(std::vector<Panel*> instances){
             timeSolving.push_back(duration_optimize.count());
             // print
             double objval;
-            CHECKED_CPX_CALL( CPXgetobjval, env, 
-            lp, &objval );
+            CHECKED_CPX_CALL( CPXgetobjval, env, lp, &objval );
             std::cout<<  "problem setting time : "<<duration_construction.count()<<" micro_sec"<<std::endl;
             std::cout<<  "problem optimizing time : "<<duration_optimize.count()<<" micro_sec"<<std::endl;
             std::cout << "Objval: " << objval << std::endl;
@@ -69,8 +71,11 @@ int performExperimentEM(std::vector<Panel*> instances){
             std::vector<double> varVals;
             varVals.resize(n);
             CHECKED_CPX_CALL( CPXgetx, env, lp, &varVals[0], 0, n - 1 );
-            std::cout<<"plotting solution panel"<<std::endl;
-            instances[in]->plotSol(varVals);
+            if (plot){
+                std::cout<<"plotting solution panel"<<std::endl;
+                instances[in]->plotSol(varVals,Y);
+            }
+            
             //write the solution
             CHECKED_CPX_CALL( CPXsolwrite, env, lp, "tsp.sol" );
             // free
@@ -86,7 +91,7 @@ int performExperimentEM(std::vector<Panel*> instances){
 	}
 	catch(std::exception& e)
 	{
-		// std::cout << ">>>EXCEPTION: " << e.what() << std::endl;
+		std::cout << ">>>EXCEPTION: " << e.what() << std::endl;
 	}
 	return 0;
 }
@@ -97,7 +102,7 @@ int performExperimentEM(std::vector<Panel*> instances){
 
 int main(){
     try {
-    int exp =4;
+    int exp =5;
     auto instances = std::vector<BoardPanel> ();
     auto p = std::vector<Panel*> ();
     switch (exp){
@@ -105,23 +110,18 @@ int main(){
             {
             std::cout<<"esecuzione grid1"<<std::endl;
             instances.push_back(BoardPanel::create_gridPanel1(1000,1000,5));
-            instances.push_back(BoardPanel::create_gridPanel1(1000,1000,10));
-            instances.push_back(BoardPanel::create_gridPanel1(1000,1000,20));
             instances.push_back(BoardPanel::create_gridPanel1(1000,1000,30));
-            instances.push_back(BoardPanel::create_gridPanel1(1000,1000,40));
-            instances.push_back(BoardPanel::create_gridPanel1(1000,1000,50));
-            instances.push_back(BoardPanel::create_gridPanel1(1000,1000,60));
-            instances.push_back(BoardPanel::create_gridPanel1(1000,1000,70));
+            instances.push_back(BoardPanel::create_gridPanel1(1000,1000,100));
+            instances.push_back(BoardPanel::create_gridPanel1(1000,1000,120));
             }
         break;
         case 0 :
             {
-            std::cout<<"esecuzione grid"<<std::endl;
+            std::cout<<"esecuzione grid0"<<std::endl;
             instances.push_back(BoardPanel::create_gridPanel(1000,1000,5));
-            instances.push_back(BoardPanel::create_gridPanel(1000,1000,10));
-            instances.push_back(BoardPanel::create_gridPanel(1000,1000,20));
             instances.push_back(BoardPanel::create_gridPanel(1000,1000,30));
-            instances.push_back(BoardPanel::create_gridPanel(1000,1000,40));
+            instances.push_back(BoardPanel::create_gridPanel(1000,1000,100));
+            instances.push_back(BoardPanel::create_gridPanel(1000,1000,120));
             // instances.push_back(BoardPanel::create_gridPanel(1000,1000,50));
             // instances.push_back(BoardPanel::create_gridPanel(1000,1000,60));
             // instances.push_back(BoardPanel::create_gridPanel(1000,1000,70));
@@ -130,14 +130,11 @@ int main(){
         case 2:
             {
             std::cout<<"esecuzione weird"<<std::endl;
-            instances.push_back(BoardPanel::create_weirdPanel(1000,1000,5));
-            instances.push_back(BoardPanel::create_weirdPanel(1000,1000,10));
-            instances.push_back(BoardPanel::create_weirdPanel(1000,1000,20));
-            instances.push_back(BoardPanel::create_weirdPanel(1000,1000,30));
-            instances.push_back(BoardPanel::create_weirdPanel(1000,1000,40));
-            instances.push_back(BoardPanel::create_weirdPanel(1000,1000,50));
-            instances.push_back(BoardPanel::create_weirdPanel(1000,1000,60));
-            instances.push_back(BoardPanel::create_weirdPanel(1000,1000,70));
+            std::cout<<"esecuzione grid1"<<std::endl;
+            instances.push_back(BoardPanel::create_gridPanel1(1000,1000,5));
+            instances.push_back(BoardPanel::create_gridPanel1(1000,1000,30));
+            instances.push_back(BoardPanel::create_gridPanel1(1000,1000,100));
+            instances.push_back(BoardPanel::create_gridPanel1(1000,1000,120));
             }
         break;
         case 3:
@@ -156,29 +153,38 @@ int main(){
             }
         break;
         case 4:
+            {   
+                auto low = BoardPanel::read("Data/grid1_30.dat");
+                auto med = BoardPanel::read("Data/grid1_60.dat");
+                auto large = BoardPanel::read("Data/grid1_100.dat");
+
+
+                // auto low = BoardPanel::create_gridPanel1(100,100,30);
+                // auto med = BoardPanel::create_gridPanel1(100,100,60);
+                // auto large = BoardPanel::create_gridPanel1(100,100,100);
+                // low.write("Data/grid1_30.dat");
+                // med.write("Data/grid1_60.dat");
+                // large.write("Data/grid1_100.dat");
+                // low.writePaolo("Data/grid1_30P.dat");
+                // med.writePaolo("Data/grid1_60P.dat");
+                // large.writePaolo("Data/grid1_100P.dat");
+
+                // low.plot(true);
+                // med.plot(true);
+                // large.plot(true);
+                instances.push_back(low);
+                instances.push_back(med);
+                instances.push_back(large);
+            }
+        break;
+        case 5:
             {
-            /*
-            auto low = BoardPanel::read("Data/grid1_20.dat");
-            auto med = BoardPanel::read("Data/grid1_30.dat");
-            auto large = BoardPanel::read("Data/grid1_80.dat");
-            */
-            
-            auto low = BoardPanel::create_gridPanel1(100,100,30);
-            auto med = BoardPanel::create_gridPanel1(100,100,60);
-            auto large = BoardPanel::create_gridPanel1(100,100,100);
-            low.write("Data/grid1_30.dat");
-            med.write("Data/grid1_60.dat");
-            large.write("Data/grid1_100.dat");
-            low.writePaolo("Data/grid1_30P.dat");
-            med.writePaolo("Data/grid1_60P.dat");
-            large.writePaolo("Data/grid1_100P.dat");
-            
-            low.plot(true);
-            med.plot(true);
-            large.plot(true);
-            instances.push_back(low);
-            instances.push_back(med);
-            instances.push_back(large);
+                // auto ultralarge = BoardPanel::create_gridPanel1(1000,1000,200);
+                // ultralarge.write("Data/grid1_200.dat");
+                auto ultralarge = BoardPanel::read("Data/grid1_200.dat");
+                ultralarge.plot(true);
+                instances.push_back(ultralarge);
+                
             }
         break;
     }
@@ -186,52 +192,10 @@ int main(){
         p.push_back(&(*i));
     }
 
-    performExperimentEM(p);
+    performExperimentEM(p,true,-1);
     } 
     catch (std::string e){
         std::cout<<e<<std::endl;
     }
-    return 0;
-}
-
-
-int main1(){
-    try
-	{
-            auto a = BoardPanel::create_gridPanel1(100,70,9);
-            DECL_ENV(env);
-            DECL_PROB( env, lp);
-            // setup LP
-            TSPModel::setupLP(env, lp,&a);
-            // cout<<"fine setupLP"<<endl;
-            //write the problem in a file
-            CHECKED_CPX_CALL( CPXwriteprob, env, lp, "lp_file/tsp.lp", NULL );
-            // optimize
-            CHECKED_CPX_CALL( CPXmipopt, env, lp );
-            // print
-            double objval;
-            CHECKED_CPX_CALL( CPXgetobjval, env, lp, &objval );
-            int n = CPXgetnumcols(env, lp);
-            
-            std::vector<double> varVals;
-            varVals.resize(n);
-            CHECKED_CPX_CALL( CPXgetx, env, lp, &varVals[0], 0, n - 1 );
-            std::cout<<"plotting solution panel"<<std::endl;
-            a.plotSol(varVals);
-            //write the solution
-            CHECKED_CPX_CALL( CPXsolwrite, env, lp, "tsp.sol" );
-            // free
-            CPXfreeprob(env, &lp);
-            CPXcloseCPLEX(&env);
-            
-	}
-	catch(std::exception& e)
-	{
-		std::cout << ">>>EXCEPTION: " << e.what() << std::endl;
-	}
-    catch(std::string& e)
-	{
-		std::cout << ">>>EXCEPTION: " << e << std::endl;
-	}
     return 0;
 }
