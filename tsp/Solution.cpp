@@ -33,11 +33,12 @@ void PathRappr::addCity(int city){
  };
 
 double PathRappr::evaluate_cost(){
+    if (costValue!=-1) return costValue; 
     double cost = 0;
     for( auto i = path.begin()++; i!= path.end(); i++ ){
         auto j = i;
         j--;
-        cost+= panel->get_euc_dist(*j,*i);
+        cost+= panel->get_dist(*j,*i);
     }
     return cost;
 }
@@ -63,6 +64,7 @@ double PathRappr::fitness(){
 // }
 
 void PathRappr::substringReversal(int minAlt = 5) {
+    //k1,k2 scelti a distanza minima minAlt, costo aggiornato.
     int delta = 0;
     int start = 0;
     int stop =0;
@@ -74,9 +76,11 @@ void PathRappr::substringReversal(int minAlt = 5) {
         delta = stop-start;
     }
     for (int i=0; i<=(stop-start)/2; i++){
+        cost -= panel->get_dist(path[start+i],path[stop-i]);
         int tmp = path[stop-i];
         path[stop-i] = path[start+i];
         path[start+i] = tmp;
+        cost += panel->get_dist(path[start+i],path[stop-i]);
     }
 }
 

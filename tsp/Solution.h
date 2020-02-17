@@ -23,6 +23,7 @@ class PathRappr : public Solution {
         //static FitnessOperator& fitnessOp;
         static Panel* panel;
         std::vector<int> path;
+        double costValue = -1;
     public :
         
         PathRappr* clone() const override;
