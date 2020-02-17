@@ -1,6 +1,7 @@
 #include <cstdlib>
 #include <vector> 
 #include "Solution.h"
+#include <iostream>
 #include "matplotlib-cpp/matplotlibcpp.h"
 
 namespace plt = matplotlibcpp;
@@ -40,6 +41,7 @@ double PathRappr::evaluate_cost(){
         j--;
         cost+= panel->get_dist(*j,*i);
     }
+    costValue = cost;
     return cost;
 }
 
@@ -65,6 +67,7 @@ double PathRappr::fitness(){
 
 void PathRappr::substringReversal(int minAlt = 5) {
     //k1,k2 scelti a distanza minima minAlt, costo aggiornato.
+    //Distanza degli archi
     int delta = 0;
     int start = 0;
     int stop =0;
@@ -76,11 +79,11 @@ void PathRappr::substringReversal(int minAlt = 5) {
         delta = stop-start;
     }
     for (int i=0; i<=(stop-start)/2; i++){
-        cost -= panel->get_dist(path[start+i],path[stop-i]);
+        costValue -= panel->get_dist(path[start+i],path[stop-i]);
         int tmp = path[stop-i];
         path[stop-i] = path[start+i];
         path[start+i] = tmp;
-        cost += panel->get_dist(path[start+i],path[stop-i]);
+        costValue += panel->get_dist(path[start+i],path[stop-i]);
     }
 }
 
@@ -95,4 +98,16 @@ double Solution::avgFitness(const std::vector<Solution*>& s){
         sum += (*i)->fitness();
     }
     return sum/s.size();
+}
+
+bool PathRappr::checkCorrectness() const{
+    int n = path.size()-1; //tolto l'ultimo che e' ripetuto
+    int sum = n*(n+1)/2; //somma 1->holesN (n incluso, 0 == n)
+    for (auto i = path.begin(); i!= path.end(); i++){
+        if ((*i) ==0) sum-= n;
+        sum-=(*i);
+    }
+    int firstNode = (path[0]==0)? n : path[0];
+    if (sum == (-firstNode)) return true; //ho tolto due volte la partenza
+    else return false;
 }
