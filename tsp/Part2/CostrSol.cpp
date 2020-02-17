@@ -31,7 +31,7 @@ PathRappr* RandomInsertion::get_sol(Panel& panel){
     //scelto il primo arco
     std::vector<int>::iterator minimo = nodi_non_usati.begin();
     for (auto i = nodi_non_usati.begin()++; i!=nodi_non_usati.end(); i++ ){
-        if (panel.get_euc_dist(0,*i) < panel.get_euc_dist(0,*minimo)) minimo = i;
+        if (panel.get_dist(0,*i) < panel.get_dist(0,*minimo)) minimo = i;
     }
 
     circParz.push_back(*minimo);
@@ -59,9 +59,9 @@ PathRappr* RandomInsertion::get_sol(Panel& panel){
         for (auto j=circParz.begin()++; j!=circParz.end(); j++){
             auto i = j;
             i--;
-            double djk = panel.get_euc_dist(*j,k);
-            double dik = panel.get_euc_dist(*i,k);
-            double dij = panel.get_euc_dist(*i,*j);
+            double djk = panel.get_dist(*j,k);
+            double dik = panel.get_dist(*i,k);
+            double dij = panel.get_dist(*i,*j);
             double delta = djk + dik - dij;
             if (delta < delta_min){
                 minimaC = make_pair(i, j);
@@ -73,27 +73,3 @@ PathRappr* RandomInsertion::get_sol(Panel& panel){
     }
     return new PathRappr(circParz,panel);
 }
-
-/*
-int main(){
-
-    std::cout<<"generazione istanza"<<std::endl;
-    auto panel = BoardPanel::create_gridPanel1(45,35,30);
-    std::cout<<"fine generazione istanza"<<std::endl;
-    
-    std::cout<<"esecuzione Random Insertion"<<std::endl;
-    auto sol = RandomInsertion::get_sol(panel);
-    sol.plot();
-    
-    
-    for (auto i = sol.path.begin(); i!=sol.path.end();i++){
-        std::cout<<*i<<" ,";
-    }
-    std::cout<<std::endl;
-    sol.substringReversal(5);
-    for (auto i = sol.path.begin(); i!=sol.path.end();i++){
-        std::cout<<*i<<" ,";
-    }
-    sol.plot();
-    std::cout<<"fine"<<std::endl;    
-}*/
