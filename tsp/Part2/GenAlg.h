@@ -11,7 +11,7 @@ class GeneticAlgorithm {
     //iperparametri
     int initPopN;
     //components 
-    Panel& panel; 
+    Panel* panel; 
     PopulationGenerator& initPopGen;
     StoppingCriteria& stopCriteria;
     SelectionOperator& selOperator;
@@ -23,7 +23,7 @@ class GeneticAlgorithm {
     
     public:
     GeneticAlgorithm(
-        Panel& panel,
+        Panel* panel,
         PopulationGenerator& pg,
         int initPopN,
         StoppingCriteria& stopCrit,
@@ -31,7 +31,8 @@ class GeneticAlgorithm {
         GeneticOperator& genOp,
         ReplacementOperator& repOp
     );
-    Solution* run();
+    Solution* run(bool plot_avgF = false,bool Verbose=false);
+    void changePanel(Panel* newPanel);
     
 
 };

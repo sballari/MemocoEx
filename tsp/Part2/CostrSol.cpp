@@ -71,5 +71,5 @@ PathRappr* RandomInsertion::get_sol(Panel& panel){
         //ho trovato dove inserire k, quindi inserisco del cammino
         circParz.insert(std::get<1>(minimaC),k);
     }
-    return new PathRappr(circParz,panel);
+    return new PathRappr(circParz,panel.clone());
 }

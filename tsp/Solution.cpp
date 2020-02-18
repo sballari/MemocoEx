@@ -3,17 +3,19 @@
 #include "Solution.h"
 #include <iostream>
 #include "matplotlib-cpp/matplotlibcpp.h"
+#include <random>
 
 namespace plt = matplotlibcpp;
 
-Panel* PathRappr::panel = nullptr;
 
-PathRappr::PathRappr(std::vector<int> p, Panel& panel) {
-    this->panel = &panel;
+Panel* PathRappr::panel = nullptr;
+PathRappr::~PathRappr(){};//if (panel!=nullptr )delete panel;
+PathRappr::PathRappr(std::vector<int> p, Panel* panel) {
+    this->panel = panel;
     path=p;
 };
-PathRappr::PathRappr(Panel& panel) {
-    this->panel = &panel;
+PathRappr::PathRappr(Panel* panel) {
+    this->panel = panel;
     path = std::vector<int>();
 };
 void PathRappr::addCity(int city){
@@ -53,17 +55,74 @@ double PathRappr::fitness(){
     return evaluate_cost();
 }
 
-// PathRappr& PathRappr::combine(PathRappr& parent2) {
-//     // Mutation by substring reversal
-//     // guaranteeing feasibility
-//     //completely random, TODO: cercare di basarsi probalisticamente
-//     auto p1 = this->path;
-//     auto p2 = parent2.path;
-//     //TODO : lista di dim`ensione divers???
-//     for (int i=0; i<=p1.size(); i++){
-//         p1[i]
-//     }
-// }
+std::vector<PathRappr*> PathRappr::orderCrossover(const PathRappr* p1, const PathRappr* p2,int Alt){
+    std::random_device rd;  //Will be used to obtain a seed for the random number engine
+    std::mt19937 gen(rd());
+    auto path1 = p1->path;
+    auto path2 = p2->path;
+
+    std::vector<int> off1p = std::vector<int>(path1.size(),-1);
+    std::vector<int> off2p = std::vector<int>(path1.size(),-1);
+
+    int delta = 0;
+    int start = 0;
+    int stop =0;
+    while (delta>Alt){ //selezione k1 , k2
+        std::uniform_int_distribution<> dis(0, path1.size()-2);
+        int k1 = dis(gen);
+        int k2 = dis(gen);
+        start = (k1 <= k2)? k1 : k2;
+        stop = (k1 >= k2)? k1 : k2;
+        delta = stop-start;
+    }
+    std::cout<<start<<" , "<<stop<<" delta : "<<delta<<std::endl;
+    //creazione di off1p
+    int s =stop+1; //indice su padre
+    int stop_ = stop;
+    for (int i=1; i<=path1.size(); i++){ // s indice figlio
+        if (stop_+i==path1.size()) {stop_= -i; continue;}
+        if (s==path1.size()-1) s=0;
+        //controllo presenta in sezione centrale di i
+        bool present = false;
+        for (int j=0; j<=(stop-start) & !present; j++) { //controllo presenza in sezione centrale
+            if (path1[start+j] == path2[stop_+i]) present = true;
+        }
+        if (!present) {off1p[s]=path2[stop_+i]; s++;}
+        //else provo i successivo
+    }
+    
+    //creazione di off2p
+    s = stop+1;// s indice figlio
+    stop_ = stop;
+    for (int i=1; i<=path1.size(); i++){  // i indice su padre
+        if (stop_+i==path1.size()) {stop_= -i; continue;}
+        if (s==path1.size()-1) s=0;
+        //controllo presenta in sezione centrale di i
+        bool present = false;
+        for (uint j=0; j<=(stop-start) & !present; j++) { //controllo presenza in sezione centrale
+            if (path2[start+j] == path1[stop_+i]) present = true;
+        }
+        if (!present) {off2p[s]=path1[stop_+i]; s++;}
+        //else provo i successivo
+    }
+
+    // creazione sezione centrale di entrambi
+    for (int i=0; i<=(stop-start); i++){  //sezione centrale
+        off1p[start+i] = path1[start+i];
+        off2p[start+i] = path2[start+i];
+    }
+
+    off1p[path1.size()-1] = off1p[0];
+    off2p[path1.size()-1] = off2p[0];
+
+    Panel* panel = (p1->panel);
+    PathRappr* off1 = new PathRappr(off1p, panel);
+    off1->costValue =-1;
+    PathRappr* off2 = new PathRappr(off2p, panel);
+    off2->costValue =-1;
+    std::vector<PathRappr*> offspring = {off1,off2};
+    return offspring;
+}
 
 void PathRappr::substringReversal(int minAlt = 5) {
     //k1,k2 scelti a distanza minima minAlt, costo aggiornato.
@@ -110,4 +169,12 @@ bool PathRappr::checkCorrectness() const{
     int firstNode = (path[0]==0)? n : path[0];
     if (sum == (-firstNode)) return true; //ho tolto due volte la partenza
     else return false;
+}
+
+void PathRappr::printSol() const {
+    std::cout<<"path"<<std::endl;
+    for (auto i = path.begin(); i!=path.end(); i++){
+        std::cout<<(*i)<<"->";
+    }
+    std::cout<<std::endl;
 }

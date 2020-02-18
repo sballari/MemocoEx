@@ -246,3 +246,7 @@ void BoardPanel::writePaolo(std::string file_name) {
         output.close();
     }
 }
+
+BoardPanel* BoardPanel::clone() const {
+    return new BoardPanel(*this);
+}

@@ -50,6 +50,24 @@ std::vector<Solution*> MonteCarloSelection::select(std::vector<Solution*>& curre
 }
 SubStringRevelsal::SubStringRevelsal(int minAlt): minAlt(minAlt){}
 
+OrderCrossOver::OrderCrossOver(int minAlt): minAlt(minAlt){}
+
+std::vector<Solution*>  OrderCrossOver::offspring(std::vector<Solution*> parents){
+    // offspring.size == parents.size
+    std::vector<Solution*> offspring = {};
+    for (auto i = ++parents.begin(); i!=parents.end(); i++){
+        auto j = i;
+        j--;
+        auto p1 = dynamic_cast<PathRappr*>(*i);
+        auto p2 = dynamic_cast<PathRappr*>(*j);
+        if (p1==nullptr|| p2==nullptr) throw "GenOp non compatibile: non stai usando una PathRappr";
+        auto twins = PathRappr::orderCrossover(p1,p2,minAlt);
+        offspring.push_back(twins[0]);
+        offspring.push_back(twins[1]);
+    }
+    return offspring;
+}
+
 std::vector<Solution*>  SubStringRevelsal::offspring(std::vector<Solution*> parents){
     /*
      parents : lista dei genitori selezionati
@@ -168,9 +186,15 @@ bool NotImprovingCriteria::stop(std::vector<Solution*>& currentPop){
     }
     double current_avg = sumFit/currentPop.size();
 
-    bool stop =  current_avg - previuslyAvgFitness < minIncrement;
+    bool stop =  current_avg - previuslyAvgFitness > minIncrement;
     previuslyAvgFitness = current_avg;
+
+    if (stop == false) attempt = 0;
+    else attempt ++;
+
+    if (attempt<maxAttempt) return false;
+    attempt = 0 ; //azzero per il prossimo pannello
     return stop;
 }
-NotImprovingCriteria::NotImprovingCriteria(double minIncr)
-: minIncrement(minIncr) {}
+NotImprovingCriteria::NotImprovingCriteria(double minIncr, int maxAttempt)
+: minIncrement(minIncr), maxAttempt(maxAttempt) {}

@@ -9,14 +9,15 @@
 class Solution { 
     public: 
         virtual Solution* clone() const = 0;
-        virtual ~Solution(){}
+        virtual ~Solution(){};
         virtual  void addCity(int city)=0;
         virtual void plot()=0;
         virtual double evaluate_cost()=0;
         virtual double fitness() = 0;
-        virtual void substringReversal(int minAlt)=0; //non e' detto che si puo' fare
+        virtual void substringReversal(int minAlt)=0;
         static double avgFitness(const std::vector<Solution*>& s);
         virtual bool checkCorrectness() const = 0;
+        virtual void printSol() const =0;
 };
 
 class PathRappr : public Solution {
@@ -26,16 +27,18 @@ class PathRappr : public Solution {
         std::vector<int> path;
         double costValue = -1;
     public :
-        
+        ~PathRappr();
         PathRappr* clone() const override;
-        PathRappr(std::vector<int> p, Panel& panel);
-        PathRappr(Panel& panel);
+        PathRappr(std::vector<int> p, Panel* panel);
+        PathRappr(Panel* panel);
         void addCity(int city) override;
         void plot() override;
         double evaluate_cost() override;
         double fitness() override;
         void substringReversal(int minAlt) override;
         bool checkCorrectness() const override;
+        static std::vector<PathRappr*> orderCrossover(const PathRappr* p1, const PathRappr* p2,int Alt = 5);
+        void printSol() const override;
 
 };
 // class FitnessOperator {

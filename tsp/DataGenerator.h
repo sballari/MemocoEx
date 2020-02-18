@@ -7,7 +7,7 @@
 
 class Panel { 
     public:
-        virtual ~Panel(){}
+        virtual ~Panel(){};
         static const double ButtonB; //length of a hole
         static const double ButtonH; //heigth of a hole
         virtual double get_dist(int a, int b)=0;
@@ -16,6 +16,7 @@ class Panel {
         virtual void plot(bool show)=0;
         virtual void plotSol(std::vector<double> decVar, int* Ys)=0;
         virtual void write(std::string file_name)=0;
+        virtual Panel* clone() const =0;
 };
 class BoardPanel : public Panel   {
     private: 
@@ -26,7 +27,7 @@ class BoardPanel : public Panel   {
         std::string dist_type ; //{'euc','man'}
         BoardPanel(double b, double h,std::vector<double> hx, std::vector<double> hy, std::string dist_type = "euc");
     public:
-        ~BoardPanel(){}
+        ~BoardPanel(){};
         double  get_dist(int a, int b) override;
         int  get_holesN() override;
         void plot(bool show) override;
@@ -35,6 +36,7 @@ class BoardPanel : public Panel   {
         void write(std::string file_name) override;
         void writePaolo(std::string file_name);
         static BoardPanel read(std::string file_name);
+        BoardPanel* clone() const override;
 
         BoardPanel();
 

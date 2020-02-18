@@ -38,9 +38,17 @@ class GeneticOperator {
 
 class SubStringRevelsal : public GeneticOperator {
     private:
-        int minAlt = 0;
+        int minAlt;
     public:
         SubStringRevelsal(int minAlt);
+        std::vector<Solution*> offspring(std::vector<Solution*> parents) override;
+};
+
+class OrderCrossOver: public GeneticOperator {
+    private:
+        int minAlt;
+    public:
+        OrderCrossOver(int minAlt);
         std::vector<Solution*> offspring(std::vector<Solution*> parents) override;
 };
 
@@ -65,10 +73,12 @@ class StoppingCriteria {
 
 class NotImprovingCriteria : public StoppingCriteria{
     private:
+        int attempt = 0;
+        int maxAttempt;
         double minIncrement;
         double previuslyAvgFitness = 0;
     public :
         bool stop( std::vector<Solution*>& currentPop) override;
-        NotImprovingCriteria(double minIncr = 0.001);
+        NotImprovingCriteria(double minIncr, int maxAttemp);
 };
 #endif

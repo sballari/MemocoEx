@@ -2,12 +2,14 @@
 #include <vector>
 #include "GenOp.h"
 #include <iostream>
+#include "../matplotlib-cpp/matplotlibcpp.h"
+namespace plt = matplotlibcpp;
 
 using namespace std;
 
 /////GENETIC_ALGORITHM///////
 GeneticAlgorithm::GeneticAlgorithm(
-    Panel& panel,
+    Panel* panel,
     PopulationGenerator& pg, 
     int initPopN,
     StoppingCriteria& sc,
@@ -24,25 +26,35 @@ GeneticAlgorithm::GeneticAlgorithm(
     repOperator(repOp)
 {}
 
-Solution* GeneticAlgorithm::run(){
-    currentPop = initPopGen.generateInitPopulation(initPopN,panel);
+Solution* GeneticAlgorithm::run(bool plot_avgF, bool Verbose){
+    currentPop = initPopGen.generateInitPopulation(initPopN,*panel);
     int iterazione = 0;
+    std::vector<double> avgFitnessV ={}; //codice per plot 
+    std::vector<double> iterazioni ={}; //codice per plot
     while (!stopCriteria.stop(currentPop)){
-        cout<<"iterazione: "<<iterazione<<std::endl;
+        if (Verbose) cout<<"iterazione: "<<iterazione<<std::endl;
         auto selected = selOperator.select(currentPop);
-        cout<<"elementi selezionati"<<endl;
         auto offspring = genOperator.offspring(selected); 
-        cout<<"generata figlianza"<<endl;
         //offspring sono nuovi oggetti
         repOperator.replacement(currentPop,offspring);
-        std::cout<<"effettuata replacement"<<endl;
         //current pop aggiorname per side effect
-        cout<<"new avgFitness : "<<Solution::avgFitness(currentPop)<<endl;
+        auto avgFitness = Solution::avgFitness(currentPop);
+        if (Verbose) cout<<"new avgFitness : "<<avgFitness<<endl;
+        if (plot_avgF){
+            iterazioni.push_back(iterazione);
+            avgFitnessV.push_back(avgFitness);
+        }
         iterazione++;
-        std::cout<<"--------------------------"<<endl;
+        if (Verbose) std::cout<<"--------------------------"<<endl;
     }
-    std::cout<<" stopCriteria has happened"<<std::endl;
-
+    cout<<"iterazioni: "<<++iterazione<<endl;
+    if (plot_avgF){
+            plt::title("avg Fitness");
+            plt::named_plot("avg fitness",iterazioni,avgFitnessV,"blue");
+            plt::legend();
+            plt::show();
+        }
+    //TROVO IL MIGLIORE
     auto bestSol = currentPop.begin();
     for (auto i = ++currentPop.begin(); i!=currentPop.end(); i++){
         if ((*i)->fitness() > (*bestSol)->fitness()){
@@ -53,3 +65,6 @@ Solution* GeneticAlgorithm::run(){
 
 }
 
+void GeneticAlgorithm::changePanel(Panel* newPanel){
+    panel = newPanel;
+}
