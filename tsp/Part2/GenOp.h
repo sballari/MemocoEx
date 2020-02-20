@@ -3,10 +3,14 @@
 
 #include <cstdlib>
 #include <vector> 
+#include <limits>
 #include "../Solution.h"
 
-
-class PopulationGenerator {
+class GenOperator {
+    public :
+    void reset() {}; //resetto tutta la memoria che usa tra le iterazioni (per il cambio pannello per esempio)
+};
+class PopulationGenerator : public GenOperator{
     public:
     virtual std::vector<Solution*> generateInitPopulation(int N, Panel& panel)=0;
 };
@@ -17,8 +21,7 @@ class RandomInsertionGenerator: public PopulationGenerator{
 };
 
 
-
-class SelectionOperator {
+class SelectionOperator: public GenOperator{
     public:
     virtual std::vector<Solution*> select(std::vector<Solution*>& currentPop) =0;
 };
@@ -31,7 +34,7 @@ class MonteCarloSelection : public SelectionOperator{
     public:
     std::vector<Solution*> select(std::vector<Solution*>& currentPop) override;   
 };
-class GeneticOperator {
+class GeneticOperator :public GenOperator{
     public:
     virtual std::vector<Solution*>  offspring(std::vector<Solution*> parents)=0;
 };
@@ -39,20 +42,22 @@ class GeneticOperator {
 class SubStringRevelsal : public GeneticOperator {
     private:
         int minAlt;
+        int maxAlt;
     public:
-        SubStringRevelsal(int minAlt);
+        SubStringRevelsal(int minAlt, int maxAlt);
         std::vector<Solution*> offspring(std::vector<Solution*> parents) override;
 };
 
 class OrderCrossOver: public GeneticOperator {
     private:
         int minAlt;
+        int maxAlt;
     public:
-        OrderCrossOver(int minAlt);
+        OrderCrossOver(int minAlt, int maxAlt);
         std::vector<Solution*> offspring(std::vector<Solution*> parents) override;
 };
 
-class ReplacementOperator {
+class ReplacementOperator :public GenOperator {
     public:
     virtual void replacement(std::vector<Solution*>& currentPop, std::vector<Solution*>& offspring)=0;
 
@@ -66,7 +71,7 @@ class SteadyStateReplacement : public ReplacementOperator {
         void replacement(std::vector<Solution*>& currentPop, std::vector<Solution*>& offspring) override;
 };
 
-class StoppingCriteria {
+class StoppingCriteria :public GenOperator{
     public:
         virtual bool stop(std::vector<Solution*>& currentPop) =0;
 };
@@ -76,9 +81,10 @@ class NotImprovingCriteria : public StoppingCriteria{
         int attempt = 0;
         int maxAttempt;
         double minIncrement;
-        double previuslyAvgFitness = 0;
+        double previuslyAvgFitness = std::numeric_limits<double>::max();
     public :
         bool stop( std::vector<Solution*>& currentPop) override;
         NotImprovingCriteria(double minIncr, int maxAttemp);
+        void reset();
 };
 #endif

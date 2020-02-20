@@ -26,8 +26,9 @@ GeneticAlgorithm::GeneticAlgorithm(
     repOperator(repOp)
 {}
 
-Solution* GeneticAlgorithm::run(bool plot_avgF, bool Verbose){
+Solution* GeneticAlgorithm::run(bool plot_avgF, bool Verbose,double optVal){
     currentPop = initPopGen.generateInitPopulation(initPopN,*panel);
+    cout<<"generata popolazione iniziale"<<endl;
     int iterazione = 0;
     std::vector<double> avgFitnessV ={}; //codice per plot 
     std::vector<double> iterazioni ={}; //codice per plot
@@ -50,6 +51,10 @@ Solution* GeneticAlgorithm::run(bool plot_avgF, bool Verbose){
     cout<<"iterazioni: "<<++iterazione<<endl;
     if (plot_avgF){
             plt::title("avg Fitness");
+            if (optVal!=-1) {
+                vector<double> opt = vector<double>(iterazioni.size(),optVal);
+                plt::named_plot("optimum",iterazioni,opt,"red");
+            }
             plt::named_plot("avg fitness",iterazioni,avgFitnessV,"blue");
             plt::legend();
             plt::show();
@@ -67,4 +72,9 @@ Solution* GeneticAlgorithm::run(bool plot_avgF, bool Verbose){
 
 void GeneticAlgorithm::changePanel(Panel* newPanel){
     panel = newPanel;
+    initPopGen.reset();
+    stopCriteria.reset();
+    selOperator.reset();
+    genOperator.reset();
+    repOperator.reset();
 }

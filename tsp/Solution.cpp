@@ -55,27 +55,14 @@ double PathRappr::fitness(){
     return evaluate_cost();
 }
 
-std::vector<PathRappr*> PathRappr::orderCrossover(const PathRappr* p1, const PathRappr* p2,int Alt){
-    std::random_device rd;  //Will be used to obtain a seed for the random number engine
-    std::mt19937 gen(rd());
+std::vector<PathRappr*> PathRappr::orderCrossover(const PathRappr* p1, const PathRappr* p2, int start, int stop){
+    //crea dei nuovi oggetti, i genitori vengono lasciati stare
     auto path1 = p1->path;
     auto path2 = p2->path;
 
     std::vector<int> off1p = std::vector<int>(path1.size(),-1);
     std::vector<int> off2p = std::vector<int>(path1.size(),-1);
 
-    int delta = 0;
-    int start = 0;
-    int stop =0;
-    while (delta>Alt){ //selezione k1 , k2
-        std::uniform_int_distribution<> dis(0, path1.size()-2);
-        int k1 = dis(gen);
-        int k2 = dis(gen);
-        start = (k1 <= k2)? k1 : k2;
-        stop = (k1 >= k2)? k1 : k2;
-        delta = stop-start;
-    }
-    std::cout<<start<<" , "<<stop<<" delta : "<<delta<<std::endl;
     //creazione di off1p
     int s =stop+1; //indice su padre
     int stop_ = stop;
@@ -124,19 +111,10 @@ std::vector<PathRappr*> PathRappr::orderCrossover(const PathRappr* p1, const Pat
     return offspring;
 }
 
-void PathRappr::substringReversal(int minAlt = 5) {
+void PathRappr::substringReversal(int start,int stop) {
     //k1,k2 scelti a distanza minima minAlt, costo aggiornato.
     //Distanza degli archi
-    int delta = 0;
-    int start = 0;
-    int stop =0;
-    while (delta<minAlt){
-        int k1 = rand()%path.size();
-        int k2 = rand()%path.size();
-        start = (k1 <= k2)? k1 : k2;
-        stop = (k1 >= k2)? k1 : k2;
-        delta = stop-start;
-    }
+    
     for (int i=0; i<=(stop-start)/2; i++){
         costValue -= panel->get_dist(path[start+i],path[stop-i]);
         int tmp = path[stop-i];
@@ -174,7 +152,11 @@ bool PathRappr::checkCorrectness() const{
 void PathRappr::printSol() const {
     std::cout<<"path"<<std::endl;
     for (auto i = path.begin(); i!=path.end(); i++){
-        std::cout<<(*i)<<"->";
+        std::cout<<(*i)<<">";
     }
     std::cout<<std::endl;
+}
+
+int PathRappr::getHolesN() const {
+    return panel->get_holesN();
 }

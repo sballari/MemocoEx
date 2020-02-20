@@ -31,7 +31,7 @@ class GeneticAlgorithm {
         GeneticOperator& genOp,
         ReplacementOperator& repOp
     );
-    Solution* run(bool plot_avgF = false,bool Verbose=false);
+    Solution* run(bool plot_avgF = false,bool Verbose=false, double optVal = -1);
     void changePanel(Panel* newPanel);
     
 

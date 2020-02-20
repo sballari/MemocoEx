@@ -7,6 +7,9 @@
 #include <iostream>
 #include <algorithm>
 #include <string>
+#include<cmath>
+#include <random>
+#include <chrono>
 
 using std::pair;
 using std::vector;
@@ -15,6 +18,15 @@ using std::string;
 using std::cout;
 using std::endl;
 
+//utility function
+double avgFitness(std::vector<Solution*>& sols){
+    double sumFit=0;
+    for (auto i = sols.begin();i!=sols.end(); i++){
+        sumFit+=(*i)->fitness();
+    }
+    return sumFit/sols.size();
+}
+
 ////RANDOM_INSERT_GENERATOR////
 std::vector<Solution*> RandomInsertionGenerator::generateInitPopulation(int N, Panel& panel){
     auto initPop = std::vector<Solution*>();
@@ -22,6 +34,19 @@ std::vector<Solution*> RandomInsertionGenerator::generateInitPopulation(int N, P
         PathRappr* sol = RandomInsertion::get_sol(panel);
         initPop.push_back(sol);
     }
+    //???????????????????????????????????????????????????????
+    //codice di dati di initoPOp TODO :[rimuovere]
+    /*
+    double avg = avgFitness(initPop);
+    double sqm = 0;
+    for (auto i = initPop.begin();i!=initPop.end();i++){
+        sqm += ((*i)->fitness()-avg)*((*i)->fitness()-avg);
+    }
+    sqm = std::sqrt(sqm/initPop.size());
+    cout<<"initPop avg "<<avg<<endl;
+    cout<<"initPop sqm "<<sqm<<endl;
+    */
+    //?????????????????????????????????????????????????????
     return initPop;
 }
 
@@ -33,35 +58,65 @@ std::vector<Solution*> MonteCarloSelection::select(std::vector<Solution*>& curre
     */
     //Super-individuals may be selected too often
     //TODO ricordarsi delle fitness gia' calcolate
+
+    unsigned seed = std::chrono::system_clock::now().time_since_epoch().count();
+    std::default_random_engine gen(seed);
+    std::uniform_real_distribution<double> dis(0, 1);
+
     double totalFitness = 0;
     for (auto i = currentPop.begin();i!=currentPop.end();i++){
         totalFitness += (*i)->fitness();
     }
     auto selected = std::vector<Solution*> ();
     for (auto i = currentPop.begin();i!=currentPop.end();i++){
-        auto pi = (*i)->fitness()/totalFitness; 
+        auto pi = (*i)->fitness()/totalFitness; //<---- TODO
+        // pi = 0.2;
+        double r = dis(gen);
         //selezione
         //TODO : possibili problemi di memoria, non mi ricordo come funziona il tutto
-        if (rand()%1 <= pi){//selezionato
+        //TODO : il padre potrebbe uscire piu' volte. Problema? No, non lo faccio
+        
+        if (r <= pi){//selezionato
+            cout<<"selezionata fitness "<<(*i)->fitness()<<endl;
             selected.push_back(*i);
         }
     }
+    cout<<"selezionati per riproduzione: "<<selected.size()<<endl;
     return selected;
 }
-SubStringRevelsal::SubStringRevelsal(int minAlt): minAlt(minAlt){}
+SubStringRevelsal::SubStringRevelsal(int _minAlt,int _maxAlt): minAlt(_minAlt), maxAlt(_maxAlt){}
 
-OrderCrossOver::OrderCrossOver(int minAlt): minAlt(minAlt){}
+OrderCrossOver::OrderCrossOver(int _minAlt,int _maxAlt): minAlt(_minAlt), maxAlt(_maxAlt){}
 
 std::vector<Solution*>  OrderCrossOver::offspring(std::vector<Solution*> parents){
     // offspring.size == parents.size
+    
     std::vector<Solution*> offspring = {};
+    std::random_device rd;  //Will be used to obtain a seed for the random number engine
+    std::mt19937 gen(rd());
+    
+    if (parents.size()<2) return offspring;
     for (auto i = ++parents.begin(); i!=parents.end(); i++){
         auto j = i;
         j--;
         auto p1 = dynamic_cast<PathRappr*>(*i);
         auto p2 = dynamic_cast<PathRappr*>(*j);
         if (p1==nullptr|| p2==nullptr) throw "GenOp non compatibile: non stai usando una PathRappr";
-        auto twins = PathRappr::orderCrossover(p1,p2,minAlt);
+        
+        int delta = 0;
+        int start = 0;
+        int stop =0;
+        while (delta<minAlt || delta >maxAlt){ //selezione k1 , k2
+            std::uniform_int_distribution<> dis1(0, (p1->getHolesN()-1)-maxAlt);
+            int k1 = dis1(gen);
+            std::uniform_int_distribution<> dis2(k1+minAlt, k1+maxAlt);
+            int k2 = dis2(gen);
+            start = (k1 <= k2)? k1 : k2;
+            stop = (k1 >= k2)? k1 : k2;
+            delta = stop - start; //(*p1)[stop]-(*p1)[start];<------ TOlO TOlO
+        }
+        // std::cout<<start<<" , "<<stop<<" delta : "<<delta<<" min-max : "<<minAlt<<","<<maxAlt<<std::endl;
+        auto twins = PathRappr::orderCrossover(p1,p2,start, stop);
         offspring.push_back(twins[0]);
         offspring.push_back(twins[1]);
     }
@@ -73,14 +128,31 @@ std::vector<Solution*>  SubStringRevelsal::offspring(std::vector<Solution*> pare
      parents : lista dei genitori selezionati
      description : substring reversal
     */
-   auto offspring = std::vector<Solution*>();
-   for (auto i=parents.begin(); i !=parents.end(); i++){
-        //combine phase
-        //substring reversal
-        Solution* son = (*i)->clone();
-        son->substringReversal(minAlt);  
-        offspring.push_back(son);
-   }
+    auto offspring = std::vector<Solution*>();
+    std::random_device rd;  //Will be used to obtain a seed for the random number engine
+    std::mt19937 gen(rd());
+    for (auto i=parents.begin(); i !=parents.end(); i++){
+            //combine phase
+            //substring reversal
+            Solution* son = (*i)->clone();
+
+            int delta = 0;
+            int start = 0;
+            int stop =0;
+            // while (delta<minAlt || delta >maxAlt){ //selezione k1 , k2
+                std::uniform_int_distribution<> dis1(0, (son->getHolesN()-1)-maxAlt);
+                int k1 = dis1(gen);
+                std::uniform_int_distribution<> dis2(k1+minAlt, k1+maxAlt);
+                int k2 = dis2(gen);
+                start = (k1 <= k2)? k1 : k2;
+                stop = (k1 >= k2)? k1 : k2;
+                delta = stop-start;
+            // }
+            std::cout<<start<<" , "<<stop<<" delta : "<<delta<<std::endl;
+            
+            son->substringReversal(start, stop);  
+            offspring.push_back(son);
+    }
 
    return offspring;
 }
@@ -94,19 +166,29 @@ void SteadyStateReplacement::replacement(std::vector<Solution*>& currentPop, std
         l'offspring e i rimossi da current sono deletati.
         #side effect su currentPop !
     */
-    offspring.reserve(offspring.size());
-    currentPop.reserve(currentPop.size());
+    
+    
+    int _changeN = changeN; //caso particolare, se non ho almeno change N elementi setto _changeN alla
+    //size della figlianza e poi, all'iterazione successiva _changeN ritorna al valore suo.
+    if (offspring.size()<changeN) _changeN = offspring.size();
+    if (_changeN==0){
+        for (auto i = offspring.begin(); i!=offspring.end();i++) if (*i!=nullptr) delete *i;
+        return;
+    }
+    
+    offspring.reserve(offspring.size()); //per evitare shringking del vettore e quindi invalidazione 
+    currentPop.reserve(currentPop.size()); //dei puntatori
 
     //test fine
     auto worstN = vector<vector<Solution *>::const_iterator>();
-    worstN.reserve(changeN);
+    worstN.reserve(_changeN);
     //individuo gli N peggiori
     //peggiore alla fine 
     //migliore all'inizio
     worstN.push_back(currentPop.begin());
     for (auto i = ++currentPop.begin(); i!=currentPop.end(); i++){
         auto fi = (*i)->fitness();
-        if (worstN.size()<changeN) {    
+        if (worstN.size()<_changeN) {    
             //inserimento ordinato 
             if (fi > (*(worstN.back()))->fitness()) worstN.insert(worstN.end(),i);
             else {
@@ -115,7 +197,7 @@ void SteadyStateReplacement::replacement(std::vector<Solution*>& currentPop, std
             }
         } 
         else {
-            //ho gia' changeN elementi
+            //ho gia' _changeN elementi
             if (fi<(*(worstN.back()))->fitness()) { 
                 worstN.pop_back(); //via il migliore
                 if (fi<(*(worstN.front()))->fitness()) worstN.insert(worstN.begin(),i);
@@ -133,11 +215,11 @@ void SteadyStateReplacement::replacement(std::vector<Solution*>& currentPop, std
     }
     //trovati i peggiori
     auto bestN = vector<vector<Solution *>::const_iterator>();
-    bestN.reserve(changeN);
+    bestN.reserve(_changeN);
     bestN.push_back(offspring.begin());
     for (auto i = ++offspring.begin(); i!=offspring.end(); i++){
         auto fi = (*i)->fitness();
-        if (bestN.size()<changeN) {    
+        if (bestN.size()<_changeN) {    
             //inserimento ordinato 
             if (fi > (*(bestN.front()))->fitness()) bestN.insert(bestN.begin(),i);
             else {
@@ -146,7 +228,7 @@ void SteadyStateReplacement::replacement(std::vector<Solution*>& currentPop, std
             }
         } 
         else {
-            //ho gia' changeN elementi
+            //ho gia' _changeN elementi
             if (fi>(*(bestN.back()))->fitness()) { 
                 bestN.pop_back(); //via il peggiore
                 if (fi>(*(bestN.front()))->fitness()) bestN.insert(bestN.begin(),i);
@@ -168,6 +250,7 @@ void SteadyStateReplacement::replacement(std::vector<Solution*>& currentPop, std
     
     auto b = bestN.begin();
     for (auto w = worstN.begin(); w!=worstN.end(); w++){
+        cout<<"cambio "<<(**w)->fitness()<<" con "<<(**b)->fitness()<<endl;
         delete (**w); //elimino l'oggetto soluzione   
         currentPop.erase(*w);    //elimino il puntatore diventato vecchio
         auto ne = currentPop.insert(*w,**b); //inserisco l'elemento nuovo 
@@ -180,21 +263,23 @@ void SteadyStateReplacement::replacement(std::vector<Solution*>& currentPop, std
 }
 
 bool NotImprovingCriteria::stop(std::vector<Solution*>& currentPop){
-    double sumFit=0;
-    for (auto i = currentPop.begin();i!=currentPop.end(); i++){
-        sumFit+=(*i)->fitness();
-    }
-    double current_avg = sumFit/currentPop.size();
-
-    bool stop =  current_avg - previuslyAvgFitness > minIncrement;
+    
+    double current_avg = avgFitness(currentPop);
+    
+    double improvement = - current_avg + previuslyAvgFitness;
+    bool stop = improvement  < minIncrement;
     previuslyAvgFitness = current_avg;
 
     if (stop == false) attempt = 0;
     else attempt ++;
 
     if (attempt<maxAttempt) return false;
-    attempt = 0 ; //azzero per il prossimo pannello
     return stop;
 }
 NotImprovingCriteria::NotImprovingCriteria(double minIncr, int maxAttempt)
 : minIncrement(minIncr), maxAttempt(maxAttempt) {}
+
+void NotImprovingCriteria::reset(){
+    attempt = 0;
+    previuslyAvgFitness = std::numeric_limits<double>::max();
+}

@@ -14,10 +14,11 @@ class Solution {
         virtual void plot()=0;
         virtual double evaluate_cost()=0;
         virtual double fitness() = 0;
-        virtual void substringReversal(int minAlt)=0;
+        virtual void substringReversal(int start, int stop)=0;
         static double avgFitness(const std::vector<Solution*>& s);
         virtual bool checkCorrectness() const = 0;
         virtual void printSol() const =0;
+        virtual int getHolesN() const =0;
 };
 
 class PathRappr : public Solution {
@@ -35,10 +36,12 @@ class PathRappr : public Solution {
         void plot() override;
         double evaluate_cost() override;
         double fitness() override;
-        void substringReversal(int minAlt) override;
+        void substringReversal(int start, int stop) override;
         bool checkCorrectness() const override;
-        static std::vector<PathRappr*> orderCrossover(const PathRappr* p1, const PathRappr* p2,int Alt = 5);
+        static std::vector<PathRappr*> orderCrossover(const PathRappr* p1, const PathRappr* p2,int start, int stop);
         void printSol() const override;
+        int getHolesN() const override;
+        int &operator[] (int i){return path[i];};
 
 };
 // class FitnessOperator {
