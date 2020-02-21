@@ -64,12 +64,16 @@ std::vector<Solution*> MonteCarloSelection::select(std::vector<Solution*>& curre
     std::uniform_real_distribution<double> dis(0, 1);
 
     double totalFitness = 0;
+    double worstFitness = -1; //highest // TODO
+    double bestFitness =  std::numeric_limits<double>::max(); //lower // TODO
     for (auto i = currentPop.begin();i!=currentPop.end();i++){
         totalFitness += (*i)->fitness();
+        if ((*i)->fitness() > worstFitness) worstFitness = (*i)->fitness();// TODO
+        if ((*i)->fitness() < bestFitness) bestFitness = (*i)->fitness();// TODO
     }
     auto selected = std::vector<Solution*> ();
     for (auto i = currentPop.begin();i!=currentPop.end();i++){
-        auto pi = (*i)->fitness()/totalFitness; //<---- TODO
+        auto pi =  (worstFitness - (*i)->fitness())/(worstFitness- bestFitness) ;// (*i)->fitness()/totalFitness; //<---- TODO
         // pi = 0.2;
         double r = dis(gen);
         //selezione
@@ -77,7 +81,7 @@ std::vector<Solution*> MonteCarloSelection::select(std::vector<Solution*>& curre
         //TODO : il padre potrebbe uscire piu' volte. Problema? No, non lo faccio
         
         if (r <= pi){//selezionato
-            cout<<"selezionata fitness "<<(*i)->fitness()<<endl;
+            // cout<<"selezionata fitness "<<(*i)->fitness()<<endl;
             selected.push_back(*i);
         }
     }
@@ -176,7 +180,7 @@ void SteadyStateReplacement::replacement(std::vector<Solution*>& currentPop, std
         return;
     }
     
-    offspring.reserve(offspring.size()); //per evitare shringking del vettore e quindi invalidazione 
+    offspring.reserve(offspring.size()); //per evitare shringking del vettore e quindi L'invalidazione 
     currentPop.reserve(currentPop.size()); //dei puntatori
 
     //test fine
@@ -198,13 +202,14 @@ void SteadyStateReplacement::replacement(std::vector<Solution*>& currentPop, std
         } 
         else {
             //ho gia' _changeN elementi
-            if (fi<(*(worstN.back()))->fitness()) { 
-                worstN.pop_back(); //via il migliore
-                if (fi<(*(worstN.front()))->fitness()) worstN.insert(worstN.begin(),i);
-                else worstN.push_back(i);              
+            if (fi>(*(worstN.back()))->fitness()) { 
+                worstN.pop_back(); //via il peggiore
+                if (fi>(*(worstN.front()))->fitness()) worstN.insert(worstN.begin(),i);
+                else worstN.insert(--worstN.end(),i); //lo metto prima dell'ultimo per minimizzare gli spostamenti 
+                //cerco il nuovo peggiore            
                 for (int j = 0; j<worstN.size(); j++){
                     double f = (*(worstN[j]))->fitness();
-                    if (f > (*(worstN.back()))->fitness()) { 
+                    if (f < (*(worstN.back()))->fitness()) { 
                         auto aux = worstN.back();
                         worstN[worstN.size()-1] = worstN[j];
                         worstN[j]=aux;     
@@ -215,6 +220,8 @@ void SteadyStateReplacement::replacement(std::vector<Solution*>& currentPop, std
     }
     //trovati i peggiori
     auto bestN = vector<vector<Solution *>::const_iterator>();
+    //peggiore in testa 
+    //migliore in coda
     bestN.reserve(_changeN);
     bestN.push_back(offspring.begin());
     for (auto i = ++offspring.begin(); i!=offspring.end(); i++){
@@ -229,14 +236,13 @@ void SteadyStateReplacement::replacement(std::vector<Solution*>& currentPop, std
         } 
         else {
             //ho gia' _changeN elementi
-            if (fi>(*(bestN.back()))->fitness()) { 
-                bestN.pop_back(); //via il peggiore
-                if (fi>(*(bestN.front()))->fitness()) bestN.insert(bestN.begin(),i);
-                else bestN.insert(--bestN.end(),i); //lo metto prima dell'ultimo per minimizzare gli spostamenti 
-                //cerco il nuovo peggiore            
+            if (fi<(*(bestN.back()))->fitness()) { 
+                bestN.pop_back(); //via il migliore
+                if (fi<(*(bestN.front()))->fitness()) bestN.insert(bestN.begin(),i);
+                else bestN.push_back(i);              
                 for (int j = 0; j<bestN.size(); j++){
                     double f = (*(bestN[j]))->fitness();
-                    if (f < (*(bestN.back()))->fitness()) { 
+                    if (f > (*(bestN.back()))->fitness()) { 
                         auto aux = bestN.back();
                         bestN[bestN.size()-1] = bestN[j];
                         bestN[j]=aux;     
