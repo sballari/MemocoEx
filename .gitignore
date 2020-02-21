@@ -4,6 +4,7 @@ tsp/DataGenerator.h.gch
 tsp/DataGenerator.o
 tsp/Part2/GenOp.o
 tsp/Part2/main.o
+tsp/Part2/main
 tsp/Part2/GenOp.o
 tsp/Solution.o
 tsp/Part2/GenAlg.o
@@ -24,3 +25,5 @@ tsp/Solution.o
 tsp/Solution.o
 tsp/Solution.o
 tsp/Solution.o
+tsp/Part2/CostrSol.o
+tsp/Part2/main
