@@ -6,7 +6,13 @@
 #include "../Solution.h"
 #include "GenOp.h"
 
-class GeneticAlgorithm {
+class AbsGenAlg {
+    public:
+    virtual Solution* run(bool plot_avgF = false,bool Verbose=false, double optVal = -1) = 0;
+    virtual void changePanel(Panel* newPanel) = 0;
+    virtual void reset()=0;
+};
+class GeneticAlgorithm: public AbsGenAlg {
     private:
     //iperparametri
     int initPopN;
@@ -33,6 +39,7 @@ class GeneticAlgorithm {
     );
     Solution* run(bool plot_avgF = false,bool Verbose=false, double optVal = -1);
     void changePanel(Panel* newPanel);
+    void reset() override;
     
 
 };
