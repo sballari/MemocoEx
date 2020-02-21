@@ -27,6 +27,7 @@ GeneticAlgorithm::GeneticAlgorithm(
 {}
 
 Solution* GeneticAlgorithm::run(bool plot_avgF, bool Verbose,double optVal){
+    reset();
     currentPop = initPopGen.generateInitPopulation(initPopN,*panel);
     cout<<"generata popolazione iniziale"<<endl;
     int iterazione = 0;
@@ -71,7 +72,10 @@ Solution* GeneticAlgorithm::run(bool plot_avgF, bool Verbose,double optVal){
 }
 
 void GeneticAlgorithm::changePanel(Panel* newPanel){
-    panel = newPanel;
+    panel = newPanel;   
+}
+
+void GeneticAlgorithm::reset(){
     initPopGen.reset();
     stopCriteria.reset();
     selOperator.reset();
