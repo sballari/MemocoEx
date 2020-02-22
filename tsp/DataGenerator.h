@@ -40,9 +40,9 @@ class BoardPanel : public Panel   {
 
         BoardPanel();
 
-        static BoardPanel create_gridPanel(double base, double height,int maxH, double prob = 0.2);
-        static BoardPanel create_gridPanel1(double base, double height,int maxH);
-        static BoardPanel create_weirdPanel(double base, double height, int maxH);
+        static BoardPanel* create_gridPanel(double base, double height,int maxH, double prob = 0.2);
+        static BoardPanel* create_gridPanel1(double base, double height,int maxH);
+        static BoardPanel* create_weirdPanel(double base, double height, int maxH);
 };
 
 #endif /* Data_gen */
