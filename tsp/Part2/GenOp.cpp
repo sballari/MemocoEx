@@ -85,7 +85,6 @@ std::vector<Solution*> MonteCarloSelection::select(std::vector<Solution*>& curre
             selected.push_back(*i);
         }
     }
-    cout<<"selezionati per riproduzione: "<<selected.size()<<endl;
     return selected;
 }
 SubStringRevelsal::SubStringRevelsal(int _minAlt,int _maxAlt): minAlt(_minAlt), maxAlt(_maxAlt){}
@@ -93,13 +92,20 @@ SubStringRevelsal::SubStringRevelsal(int _minAlt,int _maxAlt): minAlt(_minAlt), 
 OrderCrossOver::OrderCrossOver(int _minAlt,int _maxAlt): minAlt(_minAlt), maxAlt(_maxAlt){}
 
 std::vector<Solution*>  OrderCrossOver::offspring(std::vector<Solution*> parents){
-    // offspring.size == parents.size
+    /*
+    Returns a vector of new sons (in the heap). offspring.size == parents.size, 
+    if size <2 then offspring.size = 0 (no son will be created)
+    @param parents : vector of parents
+    @description: prende i parents a coppie (1,2),(2,3),(3,4) .. e genera figli con 
+    order cross over.
+    */
+    
     
     std::vector<Solution*> offspring = {};
     std::random_device rd;  //Will be used to obtain a seed for the random number engine
     std::mt19937 gen(rd());
     
-    if (parents.size()<2) return offspring;
+    if (parents.size()<2) return offspring; //empty vector (not enougth parents)
     for (auto i = ++parents.begin(); i!=parents.end(); i++){
         auto j = i;
         j--;
@@ -143,7 +149,7 @@ std::vector<Solution*>  SubStringRevelsal::offspring(std::vector<Solution*> pare
             int delta = 0;
             int start = 0;
             int stop =0;
-            // while (delta<minAlt || delta >maxAlt){ //selezione k1 , k2
+            while (delta<minAlt || delta >maxAlt){ //selezione k1 , k2
                 std::uniform_int_distribution<> dis1(0, (son->getHolesN()-1)-maxAlt);
                 int k1 = dis1(gen);
                 std::uniform_int_distribution<> dis2(k1+minAlt, k1+maxAlt);
@@ -151,8 +157,8 @@ std::vector<Solution*>  SubStringRevelsal::offspring(std::vector<Solution*> pare
                 start = (k1 <= k2)? k1 : k2;
                 stop = (k1 >= k2)? k1 : k2;
                 delta = stop-start;
-            // }
-            std::cout<<start<<" , "<<stop<<" delta : "<<delta<<std::endl;
+            }
+            // std::cout<<start<<" , "<<stop<<" delta : "<<delta<<std::endl;
             
             son->substringReversal(start, stop);  
             offspring.push_back(son);
@@ -256,15 +262,15 @@ void SteadyStateReplacement::replacement(std::vector<Solution*>& currentPop, std
     
     auto b = bestN.begin();
     for (auto w = worstN.begin(); w!=worstN.end(); w++){
-        cout<<"cambio "<<(**w)->fitness()<<" con "<<(**b)->fitness()<<endl;
-        delete (**w); //elimino l'oggetto soluzione   
+        // cout<<"cambio "<<(**w)->fitness()<<" con "<<(**b)->fitness()<<endl;
+        delete (**w); //elimino la soluzione scartata da currentPop
         currentPop.erase(*w);    //elimino il puntatore diventato vecchio
         auto ne = currentPop.insert(*w,**b); //inserisco l'elemento nuovo 
         offspring.erase(*b); //lo rimuovo anche dalla offspring perche' questa dopo sara' ripulita
-        offspring.insert(*b,nullptr);
+        offspring.insert(*b,nullptr); //per evitare resising vettore (anche se non ci dovrebbe essere)
         b++;
     }
-    //pulizia offspring
+    //pulizia offspring non usata
     for (auto i = offspring.begin(); i!=offspring.end();i++) if (*i!=nullptr) delete *i;
 }
 

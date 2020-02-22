@@ -37,6 +37,7 @@ class GeneticAlgorithm: public AbsGenAlg {
         GeneticOperator& genOp,
         ReplacementOperator& repOp
     );
+    int iterazioniLastRun = -1;
     Solution* run(bool plot_avgF = false,bool Verbose=false, double optVal = -1);
     void changePanel(Panel* newPanel);
     void reset() override;
