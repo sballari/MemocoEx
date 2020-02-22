@@ -67,10 +67,15 @@ Cheapest Insertion ---------------------------
 1.Inizializzazione:considera il circuito parziale composto dal solo vertice0.  Trova unverticejche minimizzaw(0,j)e costruisci il circuito parziale(0,j,0);
 2.Selezione:trova un verticeknon presente nel circuito parziale e un arco{i,j}del circuitoparziale che minimizzano il valorew(i,k)+w(k,j)−w(i,j);
 3.Inserimento:inserisciktraiej;
-4.  ripeti da (2) finché non hai inserito tutti i vertici nel circuito.Dato un insieme di verticiC⊆Vche rappresentano un circuito parziale, ed un verticek6∈C,definiamo ladistanzadikdaCcome il minimo peso di un arco che collegakaC:δ(k,C) =minh∈Cw(h,k)Le euristiche “Closest Insertion” e “Farthest Insertion” selezionano i vertici che minimizzano omassimizzano la distanza dal circuito parziale.Closest Insertion1.Inizializzazione:considera il circuito parziale composto dal solo vertice0.  Trova unverticejche minimizzaw(0,j)e costruisci il circuito parziale(0,j,0);
+4.  ripeti da (2) finché non hai inserito tutti i vertici nel circuito.Dato un insieme di verticiC⊆Vche rappresentano un circuito parziale, ed un verticek6∈C,definiamo ladistanzadikdaCcome il minimo peso di un arco che collegakaC:δ(k,C) =minh∈Cw(h,k)
+Le euristiche “Closest Insertion” e “Farthest Insertion” selezionano i vertici che minimizzano omassimizzano la distanza dal circuito parziale.
+Closest Insertion
+1.Inizializzazione:considera il circuito parziale composto dal solo vertice0.  Trova unverticejche minimizzaw(0,j)e costruisci il circuito parziale(0,j,0);
 2.Selezione:trova un verticeknon presente nel circuito parzialeCcheminimizzaδ(k,C);
 3.Inserimento:trova l’arco{i,j}del circuito parziale che minimizza il valorew(i,k) +w(k,j)−w(i,j)e inserisciktraiej;
-4.  ripeti da (2) finché non hai inserito tutti i vertici nel circuito.Farthest Insertion1.Inizializzazione:considera il circuito parziale composto dal solo vertice0.  Trova unverticejche minimizzaw(0,j)e costruisci il circuito parziale(0,j,0);
+4.  ripeti da (2) finché non hai inserito tutti i vertici nel circuito.
+Farthest Insertion
+1.Inizializzazione:considera il circuito parziale composto dal solo vertice0.  Trova unverticejche minimizzaw(0,j)e costruisci il circuito parziale(0,j,0);
 2.Selezione:trova un verticeknon presente nel circuito parzialeCchemassimizzaδ(k,C);
 3.Inserimento:trova l’arco{i,j}del circuito parziale che minimizza il valorew(i,k) +
 7.8  Approssimare TSP costruendo un albero di copertura minimo77w(k,j)−w(i,j)e inserisciktraiej;

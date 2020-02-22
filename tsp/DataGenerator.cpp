@@ -16,7 +16,7 @@ const double Panel::ButtonB = 1.8; //standard hole dimension
 const double Panel::ButtonH = 8.6;
 
 
-BoardPanel BoardPanel::create_gridPanel(double base, double height,int maxH,double p){
+BoardPanel* BoardPanel::create_gridPanel(double base, double height,int maxH,double p){
             //every block has probability p to be choose so the algorithm will put the
             //block in the first positizions of the grid
             //bias: preference on the initial positions
@@ -40,12 +40,12 @@ BoardPanel BoardPanel::create_gridPanel(double base, double height,int maxH,doub
                     }
                 }
             }
-            BoardPanel gridBP = BoardPanel(base,height,holesX,holesY);
+            BoardPanel* gridBP = new BoardPanel(base,height,holesX,holesY);
             return gridBP;
 
 }
 
-BoardPanel BoardPanel::create_gridPanel1(double base, double height,int maxH){
+BoardPanel* BoardPanel::create_gridPanel1(double base, double height,int maxH){
     //completely unbiased choose of the holes
     std::vector<double> holesX = std::vector<double>();
     std::vector<double> holesY = std::vector<double>();
@@ -71,7 +71,7 @@ BoardPanel BoardPanel::create_gridPanel1(double base, double height,int maxH){
             holesY.push_back(ry);
         } else i--;
     }
-    BoardPanel gridBP = BoardPanel(base,height,holesX,holesY);
+    BoardPanel* gridBP = new BoardPanel(base,height,holesX,holesY);
     return gridBP;
 }
 
@@ -104,7 +104,7 @@ int BoardPanel::get_holesN(){
 }
 
 
-BoardPanel BoardPanel::create_weirdPanel(double base, double height,int maxH){
+BoardPanel* BoardPanel::create_weirdPanel(double base, double height,int maxH){
     auto hX = std::vector<double>();
     auto hY = std::vector<double>();
 
@@ -122,7 +122,7 @@ BoardPanel BoardPanel::create_weirdPanel(double base, double height,int maxH){
         } else {i--;} //unfeasible button -> retry
         
     }
-    return BoardPanel(base,height,hX,hY);
+    return new BoardPanel(base,height,hX,hY);
 }
 
 BoardPanel::BoardPanel(){
