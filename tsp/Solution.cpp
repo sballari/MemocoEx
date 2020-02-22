@@ -56,7 +56,10 @@ double PathRappr::fitness(){
 }
 
 std::vector<PathRappr*> PathRappr::orderCrossover(const PathRappr* p1, const PathRappr* p2, int start, int stop){
-    //crea dei nuovi oggetti, i genitori vengono lasciati stare
+    /* 
+    Returns a vector with two new solution (int the heap) obtained combaning p1 and p2
+    @description : crea dei nuovi oggetti, i genitori vengono lasciati stare
+    */
     auto path1 = p1->path;
     auto path2 = p2->path;
 
@@ -112,8 +115,12 @@ std::vector<PathRappr*> PathRappr::orderCrossover(const PathRappr* p1, const Pat
 }
 
 void PathRappr::substringReversal(int start,int stop) {
-    //k1,k2 scelti a distanza minima minAlt, costo aggiornato.
-    //Distanza degli archi
+    /*
+    @description: side effect sull'oggetto chiamante. 
+    Start e stop devono essere comprese tra 0 e holesN-1
+    @param start : inizio del reversal
+    @param stop : fine del reversal
+    */
     
     for (int i=0; i<=(stop-start)/2; i++){
         costValue -= panel->get_dist(path[start+i],path[stop-i]);
@@ -138,6 +145,11 @@ double Solution::avgFitness(const std::vector<Solution*>& s){
 }
 
 bool PathRappr::checkCorrectness() const{
+    /*
+    Returns true <-> ciclo hamiltoniano
+    @description : controlla se il ciclo e' valido, quindi se non 
+    ci sono ripetizioni di nodi e se compaiono tutti.
+    */
     int n = path.size()-1; //tolto l'ultimo che e' ripetuto
     int sum = n*(n+1)/2; //somma 1->holesN (n incluso, 0 == n)
     for (auto i = path.begin(); i!= path.end(); i++){

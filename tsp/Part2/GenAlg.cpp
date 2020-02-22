@@ -29,7 +29,6 @@ GeneticAlgorithm::GeneticAlgorithm(
 Solution* GeneticAlgorithm::run(bool plot_avgF, bool Verbose,double optVal){
     reset();
     currentPop = initPopGen.generateInitPopulation(initPopN,*panel);
-    cout<<"generata popolazione iniziale"<<endl;
     int iterazione = 0;
     std::vector<double> avgFitnessV ={}; //codice per plot 
     std::vector<double> iterazioni ={}; //codice per plot
@@ -49,7 +48,8 @@ Solution* GeneticAlgorithm::run(bool plot_avgF, bool Verbose,double optVal){
         iterazione++;
         if (Verbose) std::cout<<"--------------------------"<<endl;
     }
-    cout<<"iterazioni: "<<++iterazione<<endl;
+    iterazioniLastRun = iterazione;
+    if (Verbose) cout<<"iterazioni: "<<iterazioniLastRun<<endl;
     if (plot_avgF){
             plt::title("avg Fitness");
             if (optVal!=-1) {
@@ -59,13 +59,15 @@ Solution* GeneticAlgorithm::run(bool plot_avgF, bool Verbose,double optVal){
             plt::named_plot("avg fitness",iterazioni,avgFitnessV,"blue");
             plt::legend();
             plt::show();
-        }
-    //TROVO IL MIGLIORE
+    }
+    //TROVO IL MIGLIORE e cancello le altre
     auto bestSol = currentPop.begin();
     for (auto i = ++currentPop.begin(); i!=currentPop.end(); i++){
         if ((*i)->fitness() > (*bestSol)->fitness()){
+            delete (*bestSol); //cancello la vecchia
             bestSol = i;
         }
+        else delete (*i);
     }
     return *bestSol;
 
@@ -76,6 +78,7 @@ void GeneticAlgorithm::changePanel(Panel* newPanel){
 }
 
 void GeneticAlgorithm::reset(){
+    iterazioniLastRun = -1;
     initPopGen.reset();
     stopCriteria.reset();
     selOperator.reset();
