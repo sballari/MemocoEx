@@ -2,10 +2,7 @@
 #include "CostrSol.h"
 #include "GenOp.h"
 #include <limits>
-#include <set> 
-#include <functional>
 #include <iostream>
-#include <algorithm>
 #include <string>
 #include<cmath>
 #include <random>
@@ -13,7 +10,6 @@
 
 using std::pair;
 using std::vector;
-using std::set;
 using std::string;
 using std::cout;
 using std::endl;
@@ -57,31 +53,26 @@ std::vector<Solution*> MonteCarloSelection::select(std::vector<Solution*>& curre
     @return : vector di puntatore ad oggetti di currentPop
     */
     //Super-individuals may be selected too often
-    //TODO ricordarsi delle fitness gia' calcolate
+    
 
     unsigned seed = std::chrono::system_clock::now().time_since_epoch().count();
     std::default_random_engine gen(seed);
     std::uniform_real_distribution<double> dis(0, 1);
 
     double totalFitness = 0;
-    double worstFitness = -1; //highest // TODO
-    double bestFitness =  std::numeric_limits<double>::max(); //lower // TODO
+    double worstFitness = -1; 
+    double bestFitness =  std::numeric_limits<double>::max(); 
     for (auto i = currentPop.begin();i!=currentPop.end();i++){
         totalFitness += (*i)->fitness();
-        if ((*i)->fitness() > worstFitness) worstFitness = (*i)->fitness();// TODO
-        if ((*i)->fitness() < bestFitness) bestFitness = (*i)->fitness();// TODO
+        if ((*i)->fitness() > worstFitness) worstFitness = (*i)->fitness();
+        if ((*i)->fitness() < bestFitness) bestFitness = (*i)->fitness();
     }
     auto selected = std::vector<Solution*> ();
     for (auto i = currentPop.begin();i!=currentPop.end();i++){
-        auto pi =  (worstFitness - (*i)->fitness())/(worstFitness- bestFitness) ;// (*i)->fitness()/totalFitness; //<---- TODO
-        // pi = 0.2;
+        auto pi =  (worstFitness - (*i)->fitness())/(worstFitness- bestFitness) ;
         double r = dis(gen);
         //selezione
-        //TODO : possibili problemi di memoria, non mi ricordo come funziona il tutto
-        //TODO : il padre potrebbe uscire piu' volte. Problema? No, non lo faccio
-        
         if (r <= pi){//selezionato
-            // cout<<"selezionata fitness "<<(*i)->fitness()<<endl;
             selected.push_back(*i);
         }
     }
@@ -123,7 +114,7 @@ std::vector<Solution*>  OrderCrossOver::offspring(std::vector<Solution*> parents
             int k2 = dis2(gen);
             start = (k1 <= k2)? k1 : k2;
             stop = (k1 >= k2)? k1 : k2;
-            delta = stop - start; //(*p1)[stop]-(*p1)[start];<------ TOlO TOlO
+            delta = stop - start; 
         }
         // std::cout<<start<<" , "<<stop<<" delta : "<<delta<<" min-max : "<<minAlt<<","<<maxAlt<<std::endl;
         auto twins = PathRappr::orderCrossover(p1,p2,start, stop);
@@ -158,8 +149,6 @@ std::vector<Solution*>  SubStringRevelsal::offspring(std::vector<Solution*> pare
                 stop = (k1 >= k2)? k1 : k2;
                 delta = stop-start;
             }
-            // std::cout<<start<<" , "<<stop<<" delta : "<<delta<<std::endl;
-            
             son->substringReversal(start, stop);  
             offspring.push_back(son);
     }
@@ -293,4 +282,35 @@ NotImprovingCriteria::NotImprovingCriteria(double minIncr, int maxAttempt)
 void NotImprovingCriteria::reset(){
     attempt = 0;
     previuslyAvgFitness = std::numeric_limits<double>::max();
+}
+
+bool TimerCriteria::stop( std::vector<Solution*>& currentPop) {
+    //ignora currentPop
+    if (!firstStop) {
+        firstStop = true; //lo setto come avvenuto
+        start = std::chrono::_V2::high_resolution_clock::now();
+    }
+    auto stop = std::chrono::_V2::high_resolution_clock::now(); 
+    auto duration = std::chrono::duration_cast<std::chrono::seconds>(stop - start);
+    if (duration.count()<time) return false;
+    else return true;
+}
+TimerCriteria::TimerCriteria(double time_sec): time(time_sec){}
+
+void TimerCriteria::reset(){
+    firstStop = false;
+}
+
+
+
+bool IterationLimit::stop( std::vector<Solution*>& currentPop) {
+    //ignora currentPop
+    it++;
+    if (it<limit) return false;
+    else return true;
+}
+IterationLimit::IterationLimit(int maxit) : limit(maxit){}
+
+void IterationLimit::reset(){
+    it = 0;
 }

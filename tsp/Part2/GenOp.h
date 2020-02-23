@@ -3,6 +3,7 @@
 
 #include <cstdlib>
 #include <vector> 
+#include <chrono>
 #include <limits>
 #include "../Solution.h"
 
@@ -85,6 +86,28 @@ class NotImprovingCriteria : public StoppingCriteria{
     public :
         bool stop( std::vector<Solution*>& currentPop) override;
         NotImprovingCriteria(double minIncr, int maxAttemp);
+        void reset() override;
+};
+
+class TimerCriteria: public StoppingCriteria{
+    private:
+        double time; //in secondi
+        std::chrono::_V2::system_clock::time_point start;
+        bool firstStop = false; //per capire se far partire il timer, indica se e' gia' avvenuto o meno
+    public: 
+        bool stop( std::vector<Solution*>& currentPop) override;
+        TimerCriteria(double time_sec);
+        void reset() override;
+
+};
+
+class IterationLimit: public StoppingCriteria {
+    private:
+        int it = 0; //in secondi
+        int limit = 10;
+    public: 
+        bool stop( std::vector<Solution*>& currentPop) override;
+        IterationLimit(int limit);
         void reset() override;
 };
 #endif
