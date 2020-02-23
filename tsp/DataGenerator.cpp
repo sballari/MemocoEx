@@ -5,10 +5,13 @@
 #include "matplotlib-cpp/matplotlibcpp.h"
 #include <iostream>
 #include <random>
+#include <string>
 #include <fstream>
 #include <utility>
+#include <stdexcept>
 using std::cout;
 using std::endl;
+using std::string;
 
 namespace plt = matplotlibcpp;
 
@@ -84,10 +87,10 @@ double man_dist(double xa,double ya, double xb, double yb){
     return dist;
 }
 
-double BoardPanel::get_dist(int holeA, int holeB){
+double BoardPanel::get_dist(int holeA, int holeB) const{
     double dist = -1;
     if (holeA>=get_holesN() || holeB>=get_holesN()) {
-        throw "Exception: illegal hole index";
+        throw std::runtime_error("Exception: illegal hole index, "+std::to_string(holeA)+", "+std::to_string(holeB));
     } else {
         if (holeA == holeB) return 0;
         if (dist_type=="euc")
@@ -95,11 +98,11 @@ double BoardPanel::get_dist(int holeA, int holeB){
         if (dist_type=="man")
             dist = man_dist(holesX[holeA],holesY[holeA],holesX[holeB],holesY[holeB]);
     }
-    if (dist < 0) throw "Exception: illegal dist type "+dist_type;
+    if (dist < 0) throw std::string("Exception: illegal dist type "+dist_type);
     return dist;
 }
 
-int BoardPanel::get_holesN(){
+int BoardPanel::get_holesN()const {
     return this->holesX.size();
 }
 
@@ -142,7 +145,7 @@ BoardPanel::BoardPanel(double b, double h,std::vector<double> hx, std::vector<do
 }
 
 
-void BoardPanel::plot(bool show = true){
+void BoardPanel::plot(bool show = true) const{
     
     plt::title("panel");
     plt::plot({0,0},{0,height}, "black");
@@ -152,7 +155,7 @@ void BoardPanel::plot(bool show = true){
     plt::scatter(holesX,holesY);
     if (show) plt::show();
 }
-void BoardPanel::plotSol(std::vector<double> decVar,int* Ys){
+void BoardPanel::plotSol(std::vector<double> decVar,int* Ys) const{
 
     plot(false);
     
@@ -168,15 +171,15 @@ void BoardPanel::plotSol(std::vector<double> decVar,int* Ys){
     plt::show();
 }
 
-std::vector<double> BoardPanel::getPoint(int label) {
+std::vector<double> BoardPanel::getPoint(int label) const {
     if (label<0 || label>=holesX.size()) {
-        throw "Exception: illegal hole index";
+        throw string("Exception:  index");
     }
     return {holesX[label],holesY[label]};
     
 }
 
-void BoardPanel::write(std::string file_name) {
+void BoardPanel::write(std::string file_name) const {
     //DSimpone eccher . dat codifica
     //numero_node\n base\n heigth \n x1 y1 x2 y2 ...
     std::ofstream output;

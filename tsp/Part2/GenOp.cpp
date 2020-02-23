@@ -28,7 +28,7 @@ double avgFitness(std::vector<Solution*>& sols){
 }
 
 ////RANDOM_INSERT_GENERATOR////
-std::vector<Solution*> RandomInsertionGenerator::generateInitPopulation(int N, Panel& panel){
+std::vector<Solution*> RandomInsertionGenerator::generateInitPopulation(int N, const Panel* panel){
     auto initPop = std::vector<Solution*>();
     for (int i=0; i<N; i++){
         PathRappr* sol = RandomInsertion::get_sol(panel);
@@ -111,7 +111,7 @@ std::vector<Solution*>  OrderCrossOver::offspring(std::vector<Solution*> parents
         j--;
         auto p1 = dynamic_cast<PathRappr*>(*i);
         auto p2 = dynamic_cast<PathRappr*>(*j);
-        if (p1==nullptr|| p2==nullptr) throw "GenOp non compatibile: non stai usando una PathRappr";
+        if (p1==nullptr|| p2==nullptr) throw string("GenOp non compatibile: non stai usando una PathRappr");
         
         int delta = 0;
         int start = 0;
@@ -275,10 +275,9 @@ void SteadyStateReplacement::replacement(std::vector<Solution*>& currentPop, std
 }
 
 bool NotImprovingCriteria::stop(std::vector<Solution*>& currentPop){
-    
     double current_avg = avgFitness(currentPop);
     
-    double improvement = - current_avg + previuslyAvgFitness;
+    double improvement = previuslyAvgFitness - current_avg;
     bool stop = improvement  < minIncrement;
     previuslyAvgFitness = current_avg;
 

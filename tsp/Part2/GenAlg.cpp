@@ -9,7 +9,7 @@ using namespace std;
 
 /////GENETIC_ALGORITHM///////
 GeneticAlgorithm::GeneticAlgorithm(
-    Panel* panel,
+    const Panel* panel,
     PopulationGenerator& pg, 
     int initPopN,
     StoppingCriteria& sc,
@@ -28,7 +28,7 @@ GeneticAlgorithm::GeneticAlgorithm(
 
 Solution* GeneticAlgorithm::run(bool plot_avgF, bool Verbose,double optVal){
     reset();
-    currentPop = initPopGen.generateInitPopulation(initPopN,*panel);
+    currentPop = initPopGen.generateInitPopulation(initPopN,panel);
     int iterazione = 0;
     std::vector<double> avgFitnessV ={}; //codice per plot 
     std::vector<double> iterazioni ={}; //codice per plot
@@ -64,7 +64,7 @@ Solution* GeneticAlgorithm::run(bool plot_avgF, bool Verbose,double optVal){
     auto bestSol = currentPop.begin();
     for (auto i = ++currentPop.begin(); i!=currentPop.end(); i++){
         if ((*i)->fitness() > (*bestSol)->fitness()){
-            delete (*bestSol); //cancello la vecchia
+            delete (*bestSol); //cancello la vecchia bestSol
             bestSol = i;
         }
         else delete (*i);
@@ -73,7 +73,7 @@ Solution* GeneticAlgorithm::run(bool plot_avgF, bool Verbose,double optVal){
 
 }
 
-void GeneticAlgorithm::changePanel(Panel* newPanel){
+void GeneticAlgorithm::changePanel(const Panel* newPanel){
     panel = newPanel;   
 }
 

@@ -8,16 +8,16 @@
 
 class GenOperator {
     public :
-    void reset() {}; //resetto tutta la memoria che usa tra le iterazioni (per il cambio pannello per esempio)
+    virtual void reset() {}; //resetto tutta la memoria che usa tra le iterazioni (per il cambio pannello per esempio)
 };
 class PopulationGenerator : public GenOperator{
     public:
-    virtual std::vector<Solution*> generateInitPopulation(int N, Panel& panel)=0;
+    virtual std::vector<Solution*> generateInitPopulation(int N, const Panel* panel)=0;
 };
 
 class RandomInsertionGenerator: public PopulationGenerator{
     public:
-    std::vector<Solution*> generateInitPopulation(int N, Panel& panel) override;
+    std::vector<Solution*> generateInitPopulation(int N, const Panel* panel) override;
 };
 
 
@@ -85,6 +85,6 @@ class NotImprovingCriteria : public StoppingCriteria{
     public :
         bool stop( std::vector<Solution*>& currentPop) override;
         NotImprovingCriteria(double minIncr, int maxAttemp);
-        void reset();
+        void reset() override;
 };
 #endif

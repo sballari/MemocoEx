@@ -24,14 +24,14 @@ class Solution {
 class PathRappr : public Solution {
     private: 
         //static FitnessOperator& fitnessOp;
-        static Panel* panel;
+        const Panel* panel; //puntatore che viene da fuori (NON FREEARE)
         std::vector<int> path;
         double costValue = -1;
     public :
         ~PathRappr();
         PathRappr* clone() const override;
-        PathRappr(std::vector<int> p, Panel* panel);
-        PathRappr(Panel* panel);
+        PathRappr(std::vector<int> p,const Panel* panel);
+        PathRappr(const Panel* panel);
         void addCity(int city) override;
         void plot() override;
         double evaluate_cost() override;

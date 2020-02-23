@@ -8,13 +8,13 @@
 namespace plt = matplotlibcpp;
 
 
-Panel* PathRappr::panel = nullptr;
-PathRappr::~PathRappr(){};//if (panel!=nullptr )delete panel;
-PathRappr::PathRappr(std::vector<int> p, Panel* panel) {
+
+PathRappr::~PathRappr(){};
+PathRappr::PathRappr(std::vector<int> p, const Panel* panel) {
     this->panel = panel;
     path=p;
 };
-PathRappr::PathRappr(Panel* panel) {
+PathRappr::PathRappr(const Panel* panel) {
     this->panel = panel;
     path = std::vector<int>();
 };
@@ -38,7 +38,7 @@ void PathRappr::addCity(int city){
 double PathRappr::evaluate_cost(){
     if (costValue!=-1) return costValue; 
     double cost = 0;
-    for( auto i = path.begin()++; i!= path.end(); i++ ){
+    for( auto i = ++path.begin(); i!= path.end(); i++ ){
         auto j = i;
         j--;
         cost+= panel->get_dist(*j,*i);
@@ -105,7 +105,7 @@ std::vector<PathRappr*> PathRappr::orderCrossover(const PathRappr* p1, const Pat
     off1p[path1.size()-1] = off1p[0];
     off2p[path1.size()-1] = off2p[0];
 
-    Panel* panel = (p1->panel);
+    const Panel* panel = (p1->panel);
     PathRappr* off1 = new PathRappr(off1p, panel);
     off1->costValue =-1;
     PathRappr* off2 = new PathRappr(off2p, panel);

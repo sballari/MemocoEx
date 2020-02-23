@@ -8,8 +8,9 @@
 
 class AbsGenAlg {
     public:
+    virtual ~AbsGenAlg(){};
     virtual Solution* run(bool plot_avgF = false,bool Verbose=false, double optVal = -1) = 0;
-    virtual void changePanel(Panel* newPanel) = 0;
+    virtual void changePanel(const Panel* newPanel) = 0;
     virtual void reset()=0;
 };
 class GeneticAlgorithm: public AbsGenAlg {
@@ -17,7 +18,7 @@ class GeneticAlgorithm: public AbsGenAlg {
     //iperparametri
     int initPopN;
     //components 
-    Panel* panel; 
+    const Panel* panel; 
     PopulationGenerator& initPopGen;
     StoppingCriteria& stopCriteria;
     SelectionOperator& selOperator;
@@ -28,8 +29,9 @@ class GeneticAlgorithm: public AbsGenAlg {
     std::vector<Solution*> currentPop = std::vector<Solution*>();
     
     public:
+    ~GeneticAlgorithm(){};
     GeneticAlgorithm(
-        Panel* panel,
+        const Panel* panel,
         PopulationGenerator& pg,
         int initPopN,
         StoppingCriteria& stopCrit,
@@ -39,7 +41,7 @@ class GeneticAlgorithm: public AbsGenAlg {
     );
     int iterazioniLastRun = -1;
     Solution* run(bool plot_avgF = false,bool Verbose=false, double optVal = -1);
-    void changePanel(Panel* newPanel);
+    void changePanel(const Panel* newPanel);
     void reset() override;
     
 
