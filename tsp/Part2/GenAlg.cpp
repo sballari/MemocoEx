@@ -56,7 +56,7 @@ Solution* GeneticAlgorithm::run(bool plot_avgF, bool Verbose,double optVal){
                 vector<double> opt = vector<double>(iterazioni.size(),optVal);
                 plt::named_plot("optimum",iterazioni,opt,"red");
             }
-            plt::named_plot("avg fitness",iterazioni,avgFitnessV,"blue");
+            plt::named_plot(legendName,iterazioni,avgFitnessV,colorPlot);
             plt::legend();
             plt::show();
     }

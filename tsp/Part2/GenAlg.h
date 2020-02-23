@@ -5,6 +5,7 @@
 #include <vector> 
 #include "../Solution.h"
 #include "GenOp.h"
+#include <string>
 
 class AbsGenAlg {
     public:
@@ -12,6 +13,8 @@ class AbsGenAlg {
     virtual Solution* run(bool plot_avgF = false,bool Verbose=false, double optVal = -1) = 0;
     virtual void changePanel(const Panel* newPanel) = 0;
     virtual void reset()=0;
+    std::string colorPlot = "blue";
+    std::string legendName = "avgFiness";
 };
 class GeneticAlgorithm: public AbsGenAlg {
     private:
