@@ -30,9 +30,9 @@ void performExp(vector<Panel*> panels, vector<double> optVal,vector<double> optT
         cout<<"opt sol : "<<optVal[i]<<endl;
         cout<<"sol_ott/sol %: "<< optVal[i]/(genetic_sol->fitness())*100<<endl;
         cout<<"tempo/tempo_ott(zc) %"<< duration.count()/optTime[i]<<endl;
-        cout<<"correttezza : "<<genetic_sol->checkCorrectness()<<endl;
+        cout<<"iterazioni "<<alg.iterazioniLastRun<<endl;
         cout<<"----------------------------------------------------------"<<endl;
-        //genetic_sol->plot();
+        genetic_sol->plot();
     }
 }
 
@@ -43,10 +43,10 @@ void ModelSelection(){
         auto p = BoardPanel::create_gridPanel1(1000,1000,200);
         panels.push_back(p);
     }
-    std::vector<int> Pop = {100,150,1000,2000,5000};
-    std::vector<double> RepNpc = {0.1,0.2,0.5};
-    std::vector<double> impr ={1,5,10};
-    std::vector<int> maxAttemp = {5,100,500};
+    std::vector<int> Pop = {5000,6000,7000};
+    std::vector<double> RepNpc = {0.01,0.05,0.1};
+    std::vector<double> impr ={5};
+    std::vector<int> maxAttemp = {3,5};
 
     double bestCost = std::numeric_limits<double>::max();
     int bestPopN = 0, bestRepN=0, bestMi=0, bestMa=0;
@@ -59,8 +59,8 @@ void ModelSelection(){
                     int min = 0, max = 198;
                     int repN = (*rep)*(*p);
                     auto pg = RandomInsertionGenerator();
-                    auto so = MonteCarloSelection(); //TODO NON E' PIU' MONTECARLO 
-                    auto go = OrderCrossOver(min,max); //USO DELLA NUMERAZIONE DEI NODI [ricordarsi]
+                    auto so = MonteCarloSelection(); 
+                    auto go = OrderCrossOver(min,max);
                     auto ro = SteadyStateReplacement(repN);
                     auto sc = NotImprovingCriteria(*mI,*mA);
                     auto alg = GeneticAlgorithm(nullptr,pg,*p,sc,so,go,ro);
@@ -137,31 +137,33 @@ int main(){
     
 
     try {
-        int exp = 2;
+        int exp = 1;
         switch(exp){
             case 1 :
             {
-            // auto low = BoardPanel::read("../Part1/Data/grid1_30.dat");
-            // auto med = BoardPanel::read("../Part1/Data/grid1_60.dat");
-            // auto large = BoardPanel::read("../Part1/Data/grid1_100.dat");
+            auto low = BoardPanel::read("../Part1/Data/grid1_30.dat");
+            auto med = BoardPanel::read("../Part1/Data/grid1_60.dat");
+            auto large = BoardPanel::read("../Part1/Data/grid1_100.dat");
             auto ultralarge = BoardPanel::read("../Part1/Data/grid1_200.dat");
-            // auto insanePanel = BoardPanel::create_gridPanel1(1000,1000,1000); cout<<"creato insane panel\a"<<endl;
-            vector<Panel*> panels = {&ultralarge};//{&low,&med,&large,&ultralarge};
+            // auto insanePanel = BoardPanel::create_gridPanel1(1000,1000,1000); 
+            vector<Panel*> panels ={&ultralarge};//{&low,&med,&large,&ultralarge};
             vector<double> optVal= {9503.95};//{417.464,539.265,604.344,9503.95};
-            vector<double> optTime= {3972817779};// {752030,11743409,202298252,3972817779};
+            vector<double> optTime={3972817779};// {752030,11743409,202298252,3972817779};
 
             //ALGORTITHM SETTING
-            int population = 1000;
-            int min = 5; int max = 20;
-            int RepN = 50;
-            double  imprLimit = 1;
-            int maxAttempt = 1000;
+            int population = 5000;
+            int min = 100; int max = 199; //scelta non compatibile con i panelli low,med,large
+            int RepN = 500;
+            double  imprLimit = 5;
+            int maxAttempt = 200;
             auto pg = RandomInsertionGenerator();
-            auto so = MonteCarloSelection(); //TODO NON E' PIU' MONTECARLO 
-            auto go = OrderCrossOver(min,max); //USO DELLA NUMERAZIONE DEI NODI [ricordarsi]
+            auto so = MonteCarloSelection(); 
+            auto go = OrderCrossOver(min,max); 
             auto ro = SteadyStateReplacement(RepN);
             auto sc = NotImprovingCriteria(imprLimit,maxAttempt);
             auto alg = GeneticAlgorithm(nullptr,pg,population,sc,so,go,ro);
+            
+            
 
             cout<<"\033[0;31mIperparametri GeneticAlgorithm ---------------------------\033[0m"<<endl;
             cout<<"popGenerator : RandomInsertionGenerator, PopN : "<<population<<endl;
@@ -170,15 +172,12 @@ int main(){
             cout<<"steady state replacement N : "<<RepN<<endl;
             cout<<"Stop Criteria : NotImprCriteria, minImpr "<<imprLimit<<" maxAttempt : "<<maxAttempt<<endl;
             cout<<"\033[0;31m----------------------------------------------------------\033[0m"<<endl;
-            performExp(panels,optVal,optTime,alg,true ,true);
-            for (auto i = panels.begin(); i != panels.end(); i++){
-                delete (*i);
+            performExp(panels,optVal,optTime,alg,false ,true);
+            
             }
             break;
-            }
             case 2:
             {
-                
                 ModelSelection();
             }
             break;
