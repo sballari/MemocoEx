@@ -22,7 +22,7 @@ void PathRappr::addCity(int city){
     path.push_back(city);
 };
 
- void PathRappr::plot() {
+ void PathRappr::plot(bool plot) {
     panel->plot(false);
     auto Xs = std::vector<double>();
     auto Ys = std::vector<double>();
@@ -32,7 +32,7 @@ void PathRappr::addCity(int city){
         Ys.push_back(panel->getPoint(*j)[1]);
     }
     plt::plot(Xs,Ys,"blue");
-    plt::show();
+    if (plot) plt::show();
  };
 
 double PathRappr::evaluate_cost(){

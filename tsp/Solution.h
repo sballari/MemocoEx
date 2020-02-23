@@ -11,7 +11,7 @@ class Solution {
         virtual Solution* clone() const = 0;
         virtual ~Solution(){};
         virtual  void addCity(int city)=0;
-        virtual void plot()=0;
+        virtual void plot(bool plot = true)=0;
         virtual double evaluate_cost()=0;
         virtual double fitness() = 0;
         virtual void substringReversal(int start, int stop)=0;
@@ -33,7 +33,7 @@ class PathRappr : public Solution {
         PathRappr(std::vector<int> p,const Panel* panel);
         PathRappr(const Panel* panel);
         void addCity(int city) override;
-        void plot() override;
+        void plot(bool plot = true) override;
         double evaluate_cost() override;
         double fitness() override;
         void substringReversal(int start, int stop) override;
@@ -44,17 +44,5 @@ class PathRappr : public Solution {
         int &operator[] (int i){return path[i];};
 
 };
-// class FitnessOperator {
-//     public:
-//     virtual double fitness(Solution& solution)=0;
-// };
-
-// class CostFitness: public FitnessOperator {
-//     private:
-//     Panel& panel;
-//     public:
-//     CostFitness(Panel& p);
-//     double fitness(Solution& solution) override;
-// };
 
 #endif /* Solution */
