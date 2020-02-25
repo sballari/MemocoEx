@@ -70,11 +70,11 @@ int performExperimentEM(std::vector<Panel*> instances,bool plot = false,double t
             CPXcloseCPLEX(&env);
         }
         //plotting 
-        plt::title("tsp problem f1 \nGB=1000x1000\nX:holesN, Y:time in micro_sec");
-        plt::named_plot("setting time",index,timeSetting,"green");
-        plt::named_plot("solving time", index,timeSolving,"red");
-        plt::legend();
-        plt::show();
+        // plt::title("tsp problem times");
+        // plt::named_plot("setting time",index,timeSetting,"green");
+        // plt::named_plot("solving time", index,timeSolving,"red");
+        // plt::legend();
+        // plt::show();
 	}
 	catch(std::exception& e)
 	{
@@ -89,10 +89,9 @@ int performExperimentEM(std::vector<Panel*> instances,bool plot = false,double t
 
 int main(){
     try {
-        int exp =5;
         auto instances = std::vector<Panel*> ();
-        auto med = BoardPanel::read("Data/grid1_60.dat");
-        instances.push_back(&ultralarge);
+        auto med = BoardPanel::read("../Data/grid1_60.dat");
+        instances.push_back(&med);
         performExperimentEM(instances,true,-1);
     } 
     catch (std::string e){

@@ -18,8 +18,7 @@ class AbsGenAlg {
 };
 class GeneticAlgorithm: public AbsGenAlg {
     private:
-    //iperparametri
-    int initPopN;
+    
     //components 
     const Panel* panel; 
     PopulationGenerator& initPopGen;
@@ -36,7 +35,6 @@ class GeneticAlgorithm: public AbsGenAlg {
     GeneticAlgorithm(
         const Panel* panel,
         PopulationGenerator& pg,
-        int initPopN,
         StoppingCriteria& stopCrit,
         SelectionOperator& selOp,
         GeneticOperator& genOp,

@@ -2,7 +2,7 @@
 #include <cstdlib>
 #include <math.h>
 #include <vector> 
-#include "matplotlib-cpp/matplotlibcpp.h"
+// #include "matplotlib-cpp/matplotlibcpp.h"
 #include <iostream>
 #include <random>
 #include <string>
@@ -13,13 +13,13 @@ using std::cout;
 using std::endl;
 using std::string;
 
-namespace plt = matplotlibcpp;
+// namespace plt = matplotlibcpp;
 
 const double Panel::ButtonB = 1.8; //standard hole dimension
 const double Panel::ButtonH = 8.6;
 
 
-BoardPanel* BoardPanel::create_gridPanel(double base, double height,int maxH,double p){
+BoardPanel* BoardPanel::create_gridPanel(double base, double height,uint maxH,double p){
             //every block has probability p to be choose so the algorithm will put the
             //block in the first positizions of the grid
             //bias: preference on the initial positions
@@ -27,14 +27,14 @@ BoardPanel* BoardPanel::create_gridPanel(double base, double height,int maxH,dou
             std::mt19937 gen(rd()); 
             std::uniform_real_distribution<double> dis(0, 1);
  
-            int rowN = height/(ButtonH+0.10); //10 mm of margin
-            int holesN = base/(ButtonB+0.5);
+            uint rowN = height/(ButtonH+0.10); //10 mm of margin
+            uint holesN = base/(ButtonB+0.5);
             if (holesN*rowN < maxH) throw std::string("spazio insufficente nel pannello");
             std::vector<double> holesX = std::vector<double>();
             std::vector<double> holesY = std::vector<double>();
             
-            for (int r=0; r<rowN && holesX.size()<maxH; r++){
-                for (int c=0; c<holesN && holesX.size()<maxH; c++){
+            for (uint r=0; r<rowN && holesX.size()<maxH; r++){
+                for (uint c=0; c<holesN && holesX.size()<maxH; c++){
                     if(dis(gen)<p){
                         double y = r*ButtonH+(ButtonH/2);
                         double x = c*ButtonB+(ButtonB/2);
@@ -48,7 +48,7 @@ BoardPanel* BoardPanel::create_gridPanel(double base, double height,int maxH,dou
 
 }
 
-BoardPanel* BoardPanel::create_gridPanel1(double base, double height,int maxH){
+BoardPanel* BoardPanel::create_gridPanel1(double base, double height,uint maxH){
     //completely unbiased choose of the holes
     std::vector<double> holesX = std::vector<double>();
     std::vector<double> holesY = std::vector<double>();
@@ -57,19 +57,18 @@ BoardPanel* BoardPanel::create_gridPanel1(double base, double height,int maxH){
     std::mt19937 gen(rd()); 
     
 
-    int rowN = height/(ButtonH+0.10); //10 mm of margin
-    int holesN = base/(ButtonB+0.5);
+    uint rowN = height/(ButtonH+0.10); //10 mm of margin
+    uint holesN = base/(ButtonB+0.5);
 
     std::uniform_int_distribution<> disX(0, holesN);
     std::uniform_int_distribution<> disY(0, rowN);
 
     if (holesN*rowN < maxH) throw std::string("spazio insufficente nel pannello");
-    for (int i=0; i<maxH; i++){
+    for (uint i=0; i<maxH; i++){
         double rx = disX(gen)*ButtonB+(ButtonB/2);
         double ry = disY(gen)*ButtonH+(ButtonH/2);
         
         if (rx>2 && rx<base-2 && ry>2 && ry<height-2) { //bordi del pannello
-        //if (true){
             holesX.push_back(rx);
             holesY.push_back(ry);
         } else i--;
@@ -107,7 +106,7 @@ int BoardPanel::get_holesN()const {
 }
 
 
-BoardPanel* BoardPanel::create_weirdPanel(double base, double height,int maxH){
+BoardPanel* BoardPanel::create_weirdPanel(double base, double height,uint maxH){
     auto hX = std::vector<double>();
     auto hY = std::vector<double>();
 
@@ -115,7 +114,7 @@ BoardPanel* BoardPanel::create_weirdPanel(double base, double height,int maxH){
     std::mt19937 gen(rd()); 
     std::uniform_real_distribution<double> dis(0, 1);
     
-    for (int i =0; i<maxH; i++){
+    for (uint i =0; i<maxH; i++){
         // (rx,ry) center of the button
         double rx = (dis(gen))*base;
         double ry = (dis(gen))*height;
@@ -145,33 +144,33 @@ BoardPanel::BoardPanel(double b, double h,std::vector<double> hx, std::vector<do
 }
 
 
-void BoardPanel::plot(bool show = true) const{
+// void BoardPanel::plot(bool show = true) const{
     
-    plt::title("panel");
-    plt::plot({0,0},{0,height}, "black");
-    plt::plot({0,base},{height,height}, "black");
-    plt::plot({base,base},{height,0}, "black");
-    plt::plot({0,base},{0,0}, "black");
-    plt::scatter(holesX,holesY);
-    if (show) plt::show();
-}
-void BoardPanel::plotSol(std::vector<double> decVar,int* Ys) const{
+//     plt::title("panel");
+//     plt::plot({0,0},{0,height}, "black");
+//     plt::plot({0,base},{height,height}, "black");
+//     plt::plot({base,base},{height,0}, "black");
+//     plt::plot({0,base},{0,0}, "black");
+//     plt::scatter(holesX,holesY);
+//     if (show) plt::show();
+// }
+// void BoardPanel::plotSol(std::vector<double> decVar,int* Ys) const{
 
-    plot(false);
+//     plot(false);
     
-    int Nh = get_holesN();
-    for (int i=0; i<Nh; i++){
-        for (int j=0; j<Nh; j++){
-            if (i==j) continue;
-            if (decVar[Ys[i*Nh+j]]>0.9 && decVar[Ys[i*Nh+j]]<1.1 ){
-                plt::plot({holesX[i],holesX[j]},{holesY[i],holesY[j]},"black");
-            }
-        }
-    }
-    plt::show();
-}
+//     int Nh = get_holesN();
+//     for (int i=0; i<Nh; i++){
+//         for (int j=0; j<Nh; j++){
+//             if (i==j) continue;
+//             if (decVar[Ys[i*Nh+j]]>0.9 && decVar[Ys[i*Nh+j]]<1.1 ){
+//                 plt::plot({holesX[i],holesX[j]},{holesY[i],holesY[j]},"black");
+//             }
+//         }
+//     }
+//     plt::show();
+// }
 
-std::vector<double> BoardPanel::getPoint(int label) const {
+std::vector<double> BoardPanel::getPoint(uint label) const {
     if (label<0 || label>=holesX.size()) {
         throw string("Exception:  index");
     }
@@ -206,7 +205,7 @@ BoardPanel BoardPanel::read(std::string file_name) {
     std::ifstream input;
     input.open(file_name, std::ifstream::in);
     if (!input) {
-        throw std::string("file .dat non aprile");
+        throw std::string("file .dat non apribile");
     } else {
         std::vector<double> holesX = std::vector<double>();
         std::vector<double> holesY = std::vector<double>();
@@ -226,27 +225,6 @@ BoardPanel BoardPanel::read(std::string file_name) {
         }
         return BoardPanel(base,height,holesX,holesY);
 
-    }
-}
-
-void BoardPanel::writePaolo(std::string file_name) {
-    //DSimpone eccher . dat codifica
-    //numero_node\n base\n heigth \n x1 y1 x2 y2 ...
-    std::ofstream output;
-    output.open(file_name, std::ofstream::out);
-    if (!output) {
-        throw std::string("file .dat non aprile");
-    } else {
-        int Nh = this->get_holesN();
-        output<<Nh<<std::endl;
-        for (int i =0; i<Nh ; i++){
-            for (int j=0; j<Nh; j++){
-                double dist = this->get_dist(i,j);
-                output<<dist<<" ";
-            }
-            output<<std::endl;
-        }
-        output.close();
     }
 }
 

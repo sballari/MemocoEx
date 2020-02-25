@@ -13,12 +13,14 @@ class GenOperator {
 };
 class PopulationGenerator : public GenOperator{
     public:
-    virtual std::vector<Solution*> generateInitPopulation(int N, const Panel* panel)=0;
+    virtual std::vector<Solution*> generateInitPopulation(const Panel* panel)=0;
 };
 
 class RandomInsertionGenerator: public PopulationGenerator{
+    uint popN;
     public:
-    std::vector<Solution*> generateInitPopulation(int N, const Panel* panel) override;
+    RandomInsertionGenerator(uint _popN): popN(_popN){};
+    std::vector<Solution*> generateInitPopulation(const Panel* panel) override;
 };
 
 
@@ -66,7 +68,7 @@ class ReplacementOperator :public GenOperator {
 
 class SteadyStateReplacement : public ReplacementOperator {
     private:
-    int changeN = 5;
+    long unsigned int changeN = 5;
     public : 
         SteadyStateReplacement(int changeN);
         void replacement(std::vector<Solution*>& currentPop, std::vector<Solution*>& offspring) override;
@@ -80,8 +82,8 @@ class StoppingCriteria :public GenOperator{
 class NotImprovingCriteria : public StoppingCriteria{
     private:
         int attempt = 0;
-        int maxAttempt;
         double minIncrement;
+        int maxAttempt;
         double previuslyAvgFitness = std::numeric_limits<double>::max();
     public :
         bool stop( std::vector<Solution*>& currentPop) override;

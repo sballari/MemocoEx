@@ -24,9 +24,9 @@ double avgFitness(std::vector<Solution*>& sols){
 }
 
 ////RANDOM_INSERT_GENERATOR////
-std::vector<Solution*> RandomInsertionGenerator::generateInitPopulation(int N, const Panel* panel){
+std::vector<Solution*> RandomInsertionGenerator::generateInitPopulation(const Panel* panel){
     auto initPop = std::vector<Solution*>();
-    for (int i=0; i<N; i++){
+    for (uint i=0; i<popN; i++){
         PathRappr* sol = RandomInsertion::get_sol(panel);
         initPop.push_back(sol);
     }
@@ -167,7 +167,7 @@ void SteadyStateReplacement::replacement(std::vector<Solution*>& currentPop, std
     */
     
     
-    int _changeN = changeN; //caso particolare, se non ho almeno change N elementi setto _changeN alla
+    long unsigned int _changeN = changeN; //caso particolare, se non ho almeno change N elementi setto _changeN alla
     //size della figlianza e poi, all'iterazione successiva _changeN ritorna al valore suo.
     if (offspring.size()<changeN) _changeN = offspring.size();
     if (_changeN==0){
@@ -202,7 +202,7 @@ void SteadyStateReplacement::replacement(std::vector<Solution*>& currentPop, std
                 if (fi>(*(worstN.front()))->fitness()) worstN.insert(worstN.begin(),i);
                 else worstN.insert(--worstN.end(),i); //lo metto prima dell'ultimo per minimizzare gli spostamenti 
                 //cerco il nuovo peggiore            
-                for (int j = 0; j<worstN.size(); j++){
+                for (long unsigned int j = 0; j<worstN.size(); j++){
                     double f = (*(worstN[j]))->fitness();
                     if (f < (*(worstN.back()))->fitness()) { 
                         auto aux = worstN.back();
@@ -235,7 +235,7 @@ void SteadyStateReplacement::replacement(std::vector<Solution*>& currentPop, std
                 bestN.pop_back(); //via il migliore
                 if (fi<(*(bestN.front()))->fitness()) bestN.insert(bestN.begin(),i);
                 else bestN.push_back(i);              
-                for (int j = 0; j<bestN.size(); j++){
+                for (long unsigned int j = 0; j<bestN.size(); j++){
                     double f = (*(bestN[j]))->fitness();
                     if (f > (*(bestN.back()))->fitness()) { 
                         auto aux = bestN.back();
@@ -251,10 +251,9 @@ void SteadyStateReplacement::replacement(std::vector<Solution*>& currentPop, std
     
     auto b = bestN.begin();
     for (auto w = worstN.begin(); w!=worstN.end(); w++){
-        // cout<<"cambio "<<(**w)->fitness()<<" con "<<(**b)->fitness()<<endl;
         delete (**w); //elimino la soluzione scartata da currentPop
         currentPop.erase(*w);    //elimino il puntatore diventato vecchio
-        auto ne = currentPop.insert(*w,**b); //inserisco l'elemento nuovo 
+        currentPop.insert(*w,**b); //inserisco l'elemento nuovo 
         offspring.erase(*b); //lo rimuovo anche dalla offspring perche' questa dopo sara' ripulita
         offspring.insert(*b,nullptr); //per evitare resising vettore (anche se non ci dovrebbe essere)
         b++;

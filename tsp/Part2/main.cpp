@@ -58,12 +58,12 @@ void ModelSelection(){
                 for (auto mA = maxAttemp.begin(); mA!=maxAttemp.end(); mA++){
                     int min = 0, max = 198;
                     int repN = (*rep)*(*p);
-                    auto pg = RandomInsertionGenerator();
+                    auto pg = RandomInsertionGenerator(*p);
                     auto so = MonteCarloSelection(); 
                     auto go = OrderCrossOver(min,max);
                     auto ro = SteadyStateReplacement(repN);
                     auto sc = NotImprovingCriteria(*mI,*mA);
-                    auto alg = GeneticAlgorithm(nullptr,pg,*p,sc,so,go,ro);
+                    auto alg = GeneticAlgorithm(nullptr,pg,sc,so,go,ro);
                     cout<<"\033[0;31mIperparametri GeneticAlgorithm ---------------------------\033[0m"<<endl;
                     cout<<"popGenerator : RandomInsertionGenerator, PopN : "<<*p<<endl;
                     cout<<"Selection : MonteCarlo"<<endl;
@@ -101,7 +101,7 @@ void ModelSelection(){
                         double avgTime = sumTime/panels.size();
                         double avgCost = sumCost/panels.size();
                         double avgIt = sumIt/panels.size();
-                        double sqmTime, sqmCost, sqmIt;
+                        double sqmTime =0, sqmCost =0, sqmIt =0;
                         for (uint i=0; i<panels.size(); i++){
                             sqmTime += (times[i]-avgTime)*(times[i]-avgTime);
                             sqmCost += (costs[i]-avgCost)*(costs[i]-avgCost);
@@ -137,11 +137,10 @@ int main(){
     
 
     try {
-
-            // auto low = BoardPanel::read("../Part1/Data/grid1_30.dat");
-            // auto med = BoardPanel::read("../Part1/Data/grid1_60.dat");
-            // auto large = BoardPanel::read("../Part1/Data/grid1_100.dat");
-            auto ultralarge = BoardPanel::read("../Part1/Data/grid1_200.dat");
+            // auto low = BoardPanel::read("../Data/grid1_30.dat");
+            // auto med = BoardPanel::read("../Data/grid1_60.dat");
+            // auto large = BoardPanel::read("../Data/grid1_100.dat");
+            auto ultralarge = BoardPanel::read("../Data/grid1_200.dat");
             vector<Panel*> panels ={&ultralarge};//{&low,&med,&large,&ultralarge};
             vector<double> optVal= {9503.95};//{417.464,539.265,604.344,9503.95};
             vector<double> optTime={3972817779};// {752030,11743409,202298252,3972817779};
@@ -152,12 +151,12 @@ int main(){
             int RepN = 500;
             double  imprLimit = 5;
             int maxAttempt = 200;
-            auto pg = RandomInsertionGenerator();
+            auto pg = RandomInsertionGenerator(population);
             auto so = MonteCarloSelection(); 
             auto go = OrderCrossOver(min,max); 
             auto ro = SteadyStateReplacement(RepN);
             auto sc = NotImprovingCriteria(imprLimit,maxAttempt);
-            auto alg = GeneticAlgorithm(nullptr,pg,population,sc,so,go,ro);
+            auto alg = GeneticAlgorithm(nullptr,pg,sc,so,go,ro);
             
             
 
@@ -168,7 +167,7 @@ int main(){
             cout<<"steady state replacement N : "<<RepN<<endl;
             cout<<"Stop Criteria : NotImprCriteria, minImpr "<<imprLimit<<" maxAttempt : "<<maxAttempt<<endl;
             cout<<"\033[0;31m----------------------------------------------------------\033[0m"<<endl;
-            performExp(panels,optVal,optTime,alg,false ,true);
+            performExp(panels,optVal,optTime,alg,false ,false);
         }
     catch (std::exception& e)
     {

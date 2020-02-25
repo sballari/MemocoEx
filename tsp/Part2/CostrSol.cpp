@@ -41,7 +41,7 @@ PathRappr* RandomInsertion::get_sol(const Panel* panel){
     while (!nodi_non_usati.empty()) {
         //int rint = rand()%nodi_non_usati.size();
         std::uniform_int_distribution<> dis(0, nodi_non_usati.size()-1);
-        int rint = dis(gen);        
+        long unsigned int rint = dis(gen);        
         int k = nodi_non_usati[rint];
         //rimuovo il nodo k dai nodi non usati
         if (rint == nodi_non_usati.size()-1)

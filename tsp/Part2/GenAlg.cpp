@@ -11,7 +11,6 @@ using namespace std;
 GeneticAlgorithm::GeneticAlgorithm(
     const Panel* panel,
     PopulationGenerator& pg, 
-    int initPopN,
     StoppingCriteria& sc,
     SelectionOperator& selOp,
     GeneticOperator& genOp,
@@ -19,16 +18,15 @@ GeneticAlgorithm::GeneticAlgorithm(
     ):
     panel(panel),
     initPopGen(pg),
-    initPopN (initPopN),
     stopCriteria(sc),
-    genOperator(genOp),
     selOperator(selOp),
+    genOperator(genOp),
     repOperator(repOp)
 {}
 
 Solution* GeneticAlgorithm::run(bool plot_avgF, bool Verbose,double optVal){
     reset();
-    currentPop = initPopGen.generateInitPopulation(initPopN,panel);
+    currentPop = initPopGen.generateInitPopulation(panel);
     int iterazione = 0;
     std::vector<double> avgFitnessV ={}; //codice per plot 
     std::vector<double> iterazioni ={}; //codice per plot

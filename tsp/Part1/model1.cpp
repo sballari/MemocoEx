@@ -32,8 +32,8 @@ class TSPModel {
                     var_types.push_back('C');
                     var_lbs.push_back(0.0);
                     var_ubs.push_back(CPX_INFBOUND);
-                    char* var_name = new char[12];
-                    snprintf(var_name,12,"x_%d_%d",i,j);
+                    char* var_name = new char[24];
+                    snprintf(var_name,24,"x_%d_%d",i,j);
                     var_names.push_back(var_name);
                     obj_fun_coefs.push_back(0.0);
                     Xs[i][j]=pos;
@@ -46,8 +46,8 @@ class TSPModel {
                     var_types.push_back('B');
                     var_lbs.push_back(0.0);
                     var_ubs.push_back(1.0);
-                    char* var_name = new char[12];
-                    snprintf(var_name,12,"y_%d_%d",i,j);
+                    char* var_name = new char[24];
+                    snprintf(var_name,24,"y_%d_%d",i,j);
                     var_names.push_back(var_name);
                     obj_fun_coefs.push_back(panel->get_dist(i,j));
                     Ys[i][j]=pos;
