@@ -2,10 +2,10 @@
 #include <vector> 
 #include "Solution.h"
 #include <iostream>
-#include "matplotlib-cpp/matplotlibcpp.h"
+// #include "matplotlib-cpp/matplotlibcpp.h"
 #include <random>
 
-namespace plt = matplotlibcpp;
+// namespace plt = matplotlibcpp;
 
 
 
@@ -22,18 +22,18 @@ void PathRappr::addCity(int city){
     path.push_back(city);
 };
 
- void PathRappr::plot(bool plot) {
-    panel->plot(false);
-    auto Xs = std::vector<double>();
-    auto Ys = std::vector<double>();
+//  void PathRappr::plot(bool plot) {
+//     panel->plot(false);
+//     auto Xs = std::vector<double>();
+//     auto Ys = std::vector<double>();
 
-    for (auto j = path.begin(); j!=path.end()--; j++){
-        Xs.push_back(panel->getPoint(*j)[0]);
-        Ys.push_back(panel->getPoint(*j)[1]);
-    }
-    plt::plot(Xs,Ys,"blue");
-    if (plot) plt::show();
- };
+//     for (auto j = path.begin(); j!=path.end()--; j++){
+//         Xs.push_back(panel->getPoint(*j)[0]);
+//         Ys.push_back(panel->getPoint(*j)[1]);
+//     }
+//     plt::plot(Xs,Ys,"blue");
+//     if (plot) plt::show();
+//  };
 
 double PathRappr::evaluate_cost(){
     if (costValue!=-1) return costValue; 
@@ -47,11 +47,8 @@ double PathRappr::evaluate_cost(){
     return cost;
 }
 
-// void PathRappr::setFitnessOp(FitnessOperator& fitOp){
-//     fitnessOp = fitOp;
-// }
+
 double PathRappr::fitness(){
-    //return fitnessOp.fitness(*this);
     return evaluate_cost();
 }
 
@@ -161,13 +158,13 @@ bool PathRappr::checkCorrectness() const{
     else return false;
 }
 
-void PathRappr::printSol() const {
-    std::cout<<"path"<<std::endl;
-    for (auto i = path.begin(); i!=path.end(); i++){
-        std::cout<<(*i)<<">";
-    }
-    std::cout<<std::endl;
-}
+// void PathRappr::printSol() const {
+//     std::cout<<"path"<<std::endl;
+//     for (auto i = path.begin(); i!=path.end(); i++){
+//         std::cout<<(*i)<<">";
+//     }
+//     std::cout<<std::endl;
+// }
 
 int PathRappr::getHolesN() const {
     return panel->get_holesN();

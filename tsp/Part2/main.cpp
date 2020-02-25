@@ -32,7 +32,7 @@ void performExp(vector<Panel*> panels, vector<double> optVal,vector<double> optT
         cout<<"tempo/tempo_ott(zc) %"<< duration.count()/optTime[i]<<endl;
         cout<<"iterazioni "<<alg.iterazioniLastRun<<endl;
         cout<<"----------------------------------------------------------"<<endl;
-        genetic_sol->plot();
+        // genetic_sol->plot();
     }
 }
 
@@ -137,15 +137,11 @@ int main(){
     
 
     try {
-        int exp = 1;
-        switch(exp){
-            case 1 :
-            {
-            auto low = BoardPanel::read("../Part1/Data/grid1_30.dat");
-            auto med = BoardPanel::read("../Part1/Data/grid1_60.dat");
-            auto large = BoardPanel::read("../Part1/Data/grid1_100.dat");
+
+            // auto low = BoardPanel::read("../Part1/Data/grid1_30.dat");
+            // auto med = BoardPanel::read("../Part1/Data/grid1_60.dat");
+            // auto large = BoardPanel::read("../Part1/Data/grid1_100.dat");
             auto ultralarge = BoardPanel::read("../Part1/Data/grid1_200.dat");
-            // auto insanePanel = BoardPanel::create_gridPanel1(1000,1000,1000); 
             vector<Panel*> panels ={&ultralarge};//{&low,&med,&large,&ultralarge};
             vector<double> optVal= {9503.95};//{417.464,539.265,604.344,9503.95};
             vector<double> optTime={3972817779};// {752030,11743409,202298252,3972817779};
@@ -173,20 +169,7 @@ int main(){
             cout<<"Stop Criteria : NotImprCriteria, minImpr "<<imprLimit<<" maxAttempt : "<<maxAttempt<<endl;
             cout<<"\033[0;31m----------------------------------------------------------\033[0m"<<endl;
             performExp(panels,optVal,optTime,alg,false ,true);
-            
-            }
-            break;
-            case 2:
-            {
-                ModelSelection();
-            }
-            break;
         }
-
-    }
-    catch(string m){
-        cout<<m<<endl;
-    }
     catch (std::exception& e)
     {
         std::cerr << "Exception caught : " << e.what() << std::endl;

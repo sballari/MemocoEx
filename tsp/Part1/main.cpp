@@ -3,25 +3,12 @@
 #include <vector>
 #include <chrono>
 #include "../DataGenerator.h"
-#include "../matplotlib-cpp/matplotlibcpp.h"
+// #include "../matplotlib-cpp/matplotlibcpp.h"
 #include "model1.cpp"
 #include "cpxmacro.h"
 
 
-namespace plt = matplotlibcpp;
-/*
-//data initialization
-const int Nh = 4; //number of holes (nodes of the graph)
-double Costs[Nh*Nh] = { //ridondante...
-//  0 1  2  3
-    0,10,15,30, //0
-    10,0,35,25, //1
-    15,35,0,30, //2
-    20,25,30,0  //3
-};
-const int startH = 0; //nodo partenza 
-*/
-
+// namespace plt = matplotlibcpp;
 
 int status;
 char errmsg[BUF_SIZE];
@@ -71,10 +58,10 @@ int performExperimentEM(std::vector<Panel*> instances,bool plot = false,double t
             std::vector<double> varVals;
             varVals.resize(n);
             CHECKED_CPX_CALL( CPXgetx, env, lp, &varVals[0], 0, n - 1 );
-            if (plot){
-                std::cout<<"plotting solution panel"<<std::endl;
-                instances[in]->plotSol(varVals,Y);
-            }
+            // if (plot){
+            //     std::cout<<"plotting solution panel"<<std::endl;
+            //     instances[in]->plotSol(varVals,Y);
+            // }
             
             //write the solution
             CHECKED_CPX_CALL( CPXsolwrite, env, lp, "tsp.sol" );
@@ -102,97 +89,11 @@ int performExperimentEM(std::vector<Panel*> instances,bool plot = false,double t
 
 int main(){
     try {
-    int exp =5;
-    auto instances = std::vector<BoardPanel> ();
-    auto p = std::vector<Panel*> ();
-    switch (exp){
-        case 1 : 
-            {
-            std::cout<<"esecuzione grid1"<<std::endl;
-            instances.push_back(BoardPanel::create_gridPanel1(1000,1000,5));
-            instances.push_back(BoardPanel::create_gridPanel1(1000,1000,30));
-            instances.push_back(BoardPanel::create_gridPanel1(1000,1000,100));
-            instances.push_back(BoardPanel::create_gridPanel1(1000,1000,120));
-            }
-        break;
-        case 0 :
-            {
-            std::cout<<"esecuzione grid0"<<std::endl;
-            instances.push_back(BoardPanel::create_gridPanel(1000,1000,5));
-            instances.push_back(BoardPanel::create_gridPanel(1000,1000,30));
-            instances.push_back(BoardPanel::create_gridPanel(1000,1000,100));
-            instances.push_back(BoardPanel::create_gridPanel(1000,1000,120));
-            // instances.push_back(BoardPanel::create_gridPanel(1000,1000,50));
-            // instances.push_back(BoardPanel::create_gridPanel(1000,1000,60));
-            // instances.push_back(BoardPanel::create_gridPanel(1000,1000,70));
-            }
-        break;
-        case 2:
-            {
-            std::cout<<"esecuzione weird"<<std::endl;
-            std::cout<<"esecuzione grid1"<<std::endl;
-            instances.push_back(BoardPanel::create_gridPanel1(1000,1000,5));
-            instances.push_back(BoardPanel::create_gridPanel1(1000,1000,30));
-            instances.push_back(BoardPanel::create_gridPanel1(1000,1000,100));
-            instances.push_back(BoardPanel::create_gridPanel1(1000,1000,120));
-            }
-        break;
-        case 3:
-            {
-            cout<<"creazione istanze"<<endl;
-            cout<<"creazione weird"<<endl;
-            auto a1 = BoardPanel::create_weirdPanel(20,30,20);
-            cout<<"creazione grid"<<endl;
-            auto a2 = BoardPanel::create_gridPanel(20,30,20);
-            cout<<"creazione grid1"<<endl;
-            auto a3 = BoardPanel::create_gridPanel1(20,30,20);
-            
-            a1.plot(true);
-            a2.plot(true);
-            a3.plot(true);
-            }
-        break;
-        case 4:
-            {   
-                auto low = BoardPanel::read("Data/grid1_30.dat");
-                auto med = BoardPanel::read("Data/grid1_60.dat");
-                auto large = BoardPanel::read("Data/grid1_100.dat");
-
-
-                // auto low = BoardPanel::create_gridPanel1(100,100,30);
-                // auto med = BoardPanel::create_gridPanel1(100,100,60);
-                // auto large = BoardPanel::create_gridPanel1(100,100,100);
-                // low.write("Data/grid1_30.dat");
-                // med.write("Data/grid1_60.dat");
-                // large.write("Data/grid1_100.dat");
-                // low.writePaolo("Data/grid1_30P.dat");
-                // med.writePaolo("Data/grid1_60P.dat");
-                // large.writePaolo("Data/grid1_100P.dat");
-
-                // low.plot(true);
-                // med.plot(true);
-                // large.plot(true);
-                instances.push_back(low);
-                instances.push_back(med);
-                instances.push_back(large);
-            }
-        break;
-        case 5:
-            {
-                // auto ultralarge = BoardPanel::create_gridPanel1(1000,1000,200);
-                // ultralarge.write("Data/grid1_200.dat");
-                auto ultralarge = BoardPanel::read("Data/grid1_200.dat");
-                ultralarge.plot(true);
-                instances.push_back(ultralarge);
-                
-            }
-        break;
-    }
-    for (auto i = instances.begin(); i!=instances.end(); i++){
-        p.push_back(&(*i));
-    }
-
-    performExperimentEM(p,true,-1);
+        int exp =5;
+        auto instances = std::vector<Panel*> ();
+        auto med = BoardPanel::read("Data/grid1_60.dat");
+        instances.push_back(&ultralarge);
+        performExperimentEM(instances,true,-1);
     } 
     catch (std::string e){
         std::cout<<e<<std::endl;

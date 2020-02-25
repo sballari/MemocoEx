@@ -2,8 +2,8 @@
 #include <vector>
 #include "GenOp.h"
 #include <iostream>
-#include "../matplotlib-cpp/matplotlibcpp.h"
-namespace plt = matplotlibcpp;
+// #include "../matplotlib-cpp/matplotlibcpp.h"
+// namespace plt = matplotlibcpp;
 
 using namespace std;
 
@@ -41,25 +41,25 @@ Solution* GeneticAlgorithm::run(bool plot_avgF, bool Verbose,double optVal){
         //current pop aggiorname per side effect
         auto avgFitness = Solution::avgFitness(currentPop);
         if (Verbose) cout<<"new avgFitness : "<<avgFitness<<endl;
-        if (plot_avgF){
-            iterazioni.push_back(iterazione);
-            avgFitnessV.push_back(avgFitness);
-        }
+        // if (plot_avgF){
+        //     iterazioni.push_back(iterazione);
+        //     avgFitnessV.push_back(avgFitness);
+        // }
         iterazione++;
         if (Verbose) std::cout<<"--------------------------"<<endl;
     }
     iterazioniLastRun = iterazione;
     if (Verbose) cout<<"iterazioni: "<<iterazioniLastRun<<endl;
-    if (plot_avgF){
-            plt::title("avg Fitness");
-            if (optVal!=-1) {
-                vector<double> opt = vector<double>(iterazioni.size(),optVal);
-                plt::named_plot("optimum",iterazioni,opt,"red");
-            }
-            plt::named_plot(legendName,iterazioni,avgFitnessV,colorPlot);
-            plt::legend();
-            plt::show();
-    }
+    // if (plot_avgF){
+    //         plt::title("avg Fitness");
+    //         if (optVal!=-1) {
+    //             vector<double> opt = vector<double>(iterazioni.size(),optVal);
+    //             plt::named_plot("optimum",iterazioni,opt,"red");
+    //         }
+    //         plt::named_plot(legendName,iterazioni,avgFitnessV,colorPlot);
+    //         plt::legend();
+    //         plt::show();
+    // }
     //TROVO IL MIGLIORE e cancello le altre
     auto bestSol = currentPop.begin();
     for (auto i = ++currentPop.begin(); i!=currentPop.end(); i++){
