@@ -133,21 +133,24 @@ void ModelSelection(){
 
 
 
-int main(){
+int main(int argc, char* argv[]){
     
 
     try {
             // auto low = BoardPanel::read("../Data/grid1_30.dat");
             // auto med = BoardPanel::read("../Data/grid1_60.dat");
             // auto large = BoardPanel::read("../Data/grid1_100.dat");
-            auto ultralarge = BoardPanel::read("../Data/grid1_200.dat");
-            vector<Panel*> panels ={&ultralarge};//{&low,&med,&large,&ultralarge};
+	    std::string fileName = "../Data/grid1_200.dat";
+	    if (argc>1)  fileName = argv[1];
+            auto panel = BoardPanel::read(fileName);
+            vector<Panel*> panels ={&panel};//{&low,&med,&large,&ultralarge};
             vector<double> optVal= {9503.95};//{417.464,539.265,604.344,9503.95};
             vector<double> optTime={3972817779};// {752030,11743409,202298252,3972817779};
 
             //ALGORTITHM SETTING
             int population = 5000;
-            int min = 100; int max = 199; //scelta non compatibile con i panelli low,med,large
+            int min = (fileName == "../Data/grid1_200.dat")? 100 : 0;
+	    int max = (fileName == "../Data/grid1_200.dat")? 170 : panel.get_holesN()-1; //scelta non compatibile con i panelli low,med,large
             int RepN = 500;
             double  imprLimit = 5;
             int maxAttempt = 200;
