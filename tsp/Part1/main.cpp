@@ -40,7 +40,7 @@ int performExperimentEM(std::vector<Panel*> instances,bool plot = false,double t
             auto duration_construction = duration_cast<microseconds>(stop_construction - start_construction);
             timeSetting.push_back(duration_construction.count()); 
             //write the problem in a file
-            CHECKED_CPX_CALL( CPXwriteprob, env, lp, "lp_file/tsp.lp", NULL );
+            CHECKED_CPX_CALL( CPXwriteprob, env, lp, "tsp.lp", NULL );
             // optimize
             auto start_optimize = high_resolution_clock::now(); 
             CHECKED_CPX_CALL( CPXmipopt, env, lp );
