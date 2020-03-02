@@ -87,10 +87,13 @@ int performExperimentEM(std::vector<Panel*> instances,bool plot = false,double t
 
 
 
-int main(){
+int main(int argc, char *argv[]) {
     try {
         auto instances = std::vector<Panel*> ();
-        auto med = BoardPanel::read("../Data/grid1_60.dat");
+	std::string fileName = "../Data/grid1_60.dat";
+	if (argc > 1)  fileName = argv[1];
+	std::cout<<"problem : "+fileName<<std::endl; 
+        auto med = BoardPanel::read(fileName);
         instances.push_back(&med);
         performExperimentEM(instances,true,-1);
     } 
